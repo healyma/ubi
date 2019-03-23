@@ -42,7 +42,7 @@ handleLogout = async event => {
 
   this.props.history.push("/login");
 }
-  render() {
+render() {
   const childProps = {
     isAuthenticated: this.state.isAuthenticated,
     userHasAuthenticated: this.userHasAuthenticated
@@ -61,7 +61,12 @@ handleLogout = async event => {
         <Navbar.Collapse>
           <Nav pullRight>
             {this.state.isAuthenticated
-              ? <NavItem onClick={this.handleLogout}>Logout</NavItem>
+              ? <Fragment>
+                  <LinkContainer to="/settings">
+                    <NavItem>Settings</NavItem>
+                  </LinkContainer>
+                  <NavItem onClick={this.handleLogout}>Logout</NavItem>
+                </Fragment>
               : <Fragment>
                   <LinkContainer to="/signup">
                     <NavItem>Signup</NavItem>
