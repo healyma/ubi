@@ -1,8 +1,7 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Switch } from "react-router-dom";
 import AppliedRoute from "./components/AppliedRoute";
 import Home from "./containers/Home";
-import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
 import Signup from "./containers/Signup";
 import NewNote from "./containers/NewNote";
@@ -44,7 +43,5 @@ export default ({ childProps }) => (
       component={Notes}
       props={childProps}
     />
-
-    <Redirect to="/" />
   </Switch>
 );

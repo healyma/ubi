@@ -34,7 +34,7 @@ export default class Notes extends Component {
         attachmentURL
       });
     } catch (e) {
-      alert(e);
+      alert("Here's the error : " + e);
     }
   }
 

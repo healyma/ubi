@@ -6,10 +6,10 @@ const dev = {
   },
   apiGateway: {
     REGION: "eu-west-1",
-    URL: "YOUR_DEV_API_GATEWAY_URL"
+    URL: "https://f7bj1ejue7.execute-api.eu-west-1.amazonaws.com/dev"
   },
   cognito: {
-    REGION: "e-west-1",
+    REGION: "eu-west-1",
     USER_POOL_ID: "eu-west-1_JYyMexwJR",
     APP_CLIENT_ID: "74c98ije7qbrntnsucatuuvu3s",
     IDENTITY_POOL_ID: "eu-west-1:0457e103-3554-440c-920b-82e130ebf390"
