@@ -24,9 +24,16 @@ Amplify.configure({
     endpoints: [
       {
         name: "notes",
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION
+        endpoint: config.endpoint
       },
+      {
+        name: "todos",
+        endpoint: config.endpoint
+      },
+      {
+        name: "todoItems",
+        endpoint: config.endpoint
+      }
     ]
   }
 });

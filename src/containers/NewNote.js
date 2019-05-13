@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { API } from "aws-amplify";
 import LoaderButton from "../components/LoaderButton";
 import { s3Upload } from "../libs/awsLib";
@@ -14,7 +14,8 @@ export default class NewNote extends Component {
 
     this.state = {
       isLoading: null,
-      content: ""
+      content: "",
+      title:""
     };
   }
 
@@ -49,7 +50,8 @@ handleSubmit = async event => {
 
     await this.createNote({
       attachment,
-      content: this.state.content
+      content: this.state.content,
+      title: this.state.title
     });
     this.props.history.push("/");
   } catch (e) {
@@ -68,6 +70,13 @@ createNote(note) {
     return (
       <div className="NewNote">
         <form onSubmit={this.handleSubmit}>
+        <FormGroup controlId="title">
+            <FormControl
+              onChange={this.handleChange}
+              value={this.state.title}
+              componentClass="input"
+            />
+          </FormGroup>
           <FormGroup controlId="content">
             <FormControl
               onChange={this.handleChange}
@@ -76,7 +85,7 @@ createNote(note) {
             />
           </FormGroup>
           <FormGroup controlId="file">
-            <ControlLabel>Attachment</ControlLabel>
+            <FormLabel>Attachment</FormLabel>
             <FormControl onChange={this.handleFileChange} type="file" />
           </FormGroup>
           <LoaderButton

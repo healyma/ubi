@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from "react";
-import { Link, withRouter } from "react-router-dom";
+import {  withRouter } from "react-router-dom";
 import { Auth } from "aws-amplify";
-import { Nav, Navbar, NavItem } from "react-bootstrap";
+import { Nav, NavItem,  NavDropdown } from "react-bootstrap";
+import Navbar from "react-bootstrap/Navbar"
 import { LinkContainer } from "react-router-bootstrap";
 
 import "./App.css";
@@ -11,9 +12,7 @@ class App extends Component {
 constructor(props) {
   super(props);
 
-  this.state = {
-    isAuthenticated: false
-  };
+
     this.state = {
   isAuthenticated: false,
   isAuthenticating: true
@@ -51,34 +50,36 @@ render() {
   return (
     !this.state.isAuthenticating &&
     <div className="App container">
-      <Navbar fluid collapseOnSelect>
-        <Navbar.Header>
-          <Navbar.Brand>
-            <Link to="/">UbiDoBi</Link>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Navbar.Collapse>
-          <Nav pullRight>
-            {this.state.isAuthenticated
-              ? <Fragment>
-                  <LinkContainer to="/settings">
-                    <NavItem>Settings</NavItem>
-                  </LinkContainer>
-                  <NavItem onClick={this.handleLogout}>Logout</NavItem>
+    <Navbar bg="light" expand="lg">
+  <Navbar.Brand ><LinkContainer to="/">
+                    <Nav.Link>UbiDoBi</Nav.Link>
+                  </LinkContainer></Navbar.Brand>
+  <Navbar.Toggle aria-controls="basic-navbar-nav" />
+  <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
+    <Nav>
+    {this.state.isAuthenticated
+              ? <Fragment >
+                  <NavDropdown title="My Ubi" id="basic-nav-dropdown" alignRight>
+        <NavDropdown.Item href="#action/3.1">My Profile</NavDropdown.Item>
+        <NavDropdown.Item href="#action/3.2">My Contacts</NavDropdown.Item>
+        <NavDropdown.Item href="#action/3.3">Notifications &amp; Settings</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item onClick={this.handleLogout}>Logout</NavDropdown.Item>
+        <NavDropdown.Divider />
+        <NavDropdown.Item href="#action/3.4">Delete Account</NavDropdown.Item>
+      </NavDropdown>
+                  
                 </Fragment>
               : <Fragment>
-                  <LinkContainer to="/signup">
-                    <NavItem>Signup</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/login">
-                    <NavItem>Login</NavItem>
-                  </LinkContainer>
+                  
                 </Fragment>
             }
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
+     
+    </Nav>
+
+  </Navbar.Collapse>
+</Navbar>
+
       <Routes childProps={childProps} />
     </div>
   );

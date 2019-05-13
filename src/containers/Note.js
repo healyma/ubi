@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { API, Storage } from "aws-amplify";
-import { ListGroup,  ListGroupItem, FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { ListGroup, ListGroupItem, FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 import LoaderButton from "../components/LoaderButton";

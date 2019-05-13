@@ -6,6 +6,10 @@ import Login from "./containers/Login";
 import Signup from "./containers/Signup";
 import NewNote from "./containers/NewNote";
 import Notes from "./containers/Notes";
+import Todos from "./containers/Todos";
+import Todo from "./containers/List";
+import Note from "./containers/Note";
+import NewTodo from "./containers/NewTodo";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 import Settings from "./containers/Settings";
@@ -40,8 +44,33 @@ export default ({ childProps }) => (
     <AuthenticatedRoute
       path="/notes/:id"
       exact
+      component={Note}
+      props={childProps}
+    />
+        <AuthenticatedRoute
+      path="/todos/new"
+      exact
+      component={NewTodo}
+      props={childProps}
+    />
+    <AuthenticatedRoute
+      path="/todos/:id"
+      exact
+      component={Todo}
+      props={childProps}
+    />
+          <AuthenticatedRoute
+      path="/todos"
+      exact
+      component={Todos}
+      props={childProps}
+    />
+          <AuthenticatedRoute
+      path="/notes"
+      exact
       component={Notes}
       props={childProps}
     />
+           
   </Switch>
 );

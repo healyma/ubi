@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { API } from "aws-amplify";
-import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
+import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import ProjectsCard from "./ProjectsCard";
 import "./Home.css";
 
 export default class Home extends Component {
@@ -10,52 +11,11 @@ export default class Home extends Component {
     super(props);
 
     this.state = {
-      isLoading: true,
-      notes: []
+      isLoading: true
     };
   }
-async componentDidMount() {
-  if (!this.props.isAuthenticated) {
-    return;
-  }
 
-  try {
-    const notes = await this.notes();
-    this.setState({ notes });
-  } catch (e) {
-    alert(e);
-  }
 
-  this.setState({ isLoading: false });
-}
-
-notes() {
-  return API.get("notes", "/notes");
-}
-renderNotesList(notes) {
-  return [{}].concat(notes).map(
-    (note, i) =>
-      i !== 0
-        ? <LinkContainer
-            key={note.noteId}
-            to={`/notes/${note.noteId}`}
-          >
-            <ListGroupItem header={note.content.trim().split("\n")[0]}>
-              {"Created: " + new Date(note.createdAt).toLocaleString()}
-            </ListGroupItem>
-          </LinkContainer>
-        : <LinkContainer
-            key="new"
-            to="/notes/new"
-          >
-            <ListGroupItem>
-              <h4>
-                <b>{"\uFF0B"}</b> Create a new note
-              </h4>
-            </ListGroupItem>
-          </LinkContainer>
-  );
-}
 
 renderLander() {
   return (
@@ -74,21 +34,53 @@ renderLander() {
   );
 }
 
-  renderNotes() {
-    return (
-      <div className="notes">
-        <PageHeader>Your Notes</PageHeader>
-        <ListGroup>
-          {!this.state.isLoading && this.renderNotesList(this.state.notes)}
+renderHome(){
+  return (<div>
+
+    <ProjectsCard></ProjectsCard>
+<Card >
+  <Card.Img variant="top" src="holder.js/100px180" />
+  <Card.Body>
+    <Card.Title>My Tasks</Card.Title>
+    <Card.Text>
+    [ Tasks assigned to me]
+      [ Summary, complete, open/current and upcoming]
+      [list open tasks  -> project->(sublists)->task]
+      [button to start task, complete task]
+    </Card.Text>
+    <Button variant="primary">Go somewhere</Button>
+  </Card.Body>
+</Card>
+  <ListGroup
+  ><LinkContainer
+            key="newNote"
+            to="/notes"
+          >
+            <ListGroupItem>
+              <h4>
+                <b>{"\uFF0B"}</b> Notes
+              </h4>
+            </ListGroupItem>
+          </LinkContainer>
+          <LinkContainer
+          key="newTodo"
+          to="/todos"
+        >
+          <ListGroupItem>
+            <h4>
+              <b>{"\uFF0B"}</b> Todo Lists
+            </h4>
+          </ListGroupItem>
+        </LinkContainer>
         </ListGroup>
-      </div>
-    );
-  }
+        </div>
+        );
+}
 
   render() {
     return (
       <div className="Home">
-        {this.props.isAuthenticated ? this.renderNotes() : this.renderLander()}
+        {this.props.isAuthenticated ? this.renderHome() : this.renderLander()}
       </div>
     );
   }
