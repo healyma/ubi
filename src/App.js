@@ -4,6 +4,7 @@ import { Auth } from "aws-amplify";
 import { Nav, NavItem,  NavDropdown } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar"
 import { LinkContainer } from "react-router-bootstrap";
+import config from "./config";
 
 import "./App.css";
 import Routes from "./Routes";
@@ -20,8 +21,10 @@ constructor(props) {
 }
 async componentDidMount() {
   try {
-    await Auth.currentSession();
+    var auth= await Auth.currentSession();
     this.userHasAuthenticated(true);
+    console.log(auth.getAccessToken().getJwtToken());
+    console.log(auth.getIdToken().payload);
   }
   catch(e) {
     if (e !== 'No current user') {

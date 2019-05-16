@@ -13,10 +13,36 @@ export default class ProjectsCard extends Component {
         <Card.Body>
           <Card.Title>My projects</Card.Title>
           <Card.Text>
-            [ list projects I OWN and links to todos and gantt charts]
-            [ stats about each project (% complete), time since last activity]
-          </Card.Text>
-          <Button variant="primary">Go somewhere</Button>
+            [ list projects I'm involved in and links to todos and gantt charts]
+            [project name | date created | Owner | All tasks | Available tasks (all/mine) | aging/health | <span className="oi oi-project"></span> | <span className="oi oi-list"></span> | <span className="oi oi-document"></span> ]
+            
+           
+          </Card.Text><div className="d-flex justify-content-between">
+          <LinkContainer
+          key="projects"
+          to="/projects"
+        >
+          <Button variant="primary">
+            View All
+          </Button>
+        </LinkContainer>
+        <LinkContainer
+          key="newTodo"
+          to="/projects/new"
+        >
+          <Button variant="primary">
+            New Project
+          </Button>
+        </LinkContainer>
+        <LinkContainer
+          key="todos"
+          to="/todos"
+        >
+          <Button variant="primary">
+            View All
+          </Button>
+        </LinkContainer>
+        </div>
         </Card.Body>
       </Card>
      )

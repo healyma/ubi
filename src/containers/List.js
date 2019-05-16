@@ -4,7 +4,7 @@ import { FormGroup, ListGroupItem } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { LinkContainer } from "react-router-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import Gantt from "./Gantt";
+import GanttChart from "./Gantt";
 import config from "../config";
 import "./Lists.css";
 import ListItem from "./ListItem";
@@ -12,6 +12,7 @@ import { DragDropContext, Draggable } from "react-beautiful-dnd";
 import  DroppableList from "./DroppableList";
 import NewListItem from "./NewListItem";
 export default class List extends Component {
+  lastItem={};
   constructor(props) {
     super(props);
 this.newList = props.listItems;
@@ -44,6 +45,7 @@ this.newList = props.listItems;
       List: await this.getList(),
       listItems: await this.getListItems()
     })
+
     await this.setState({nextOrder: (this.state.listItems[0]? this.state.listItems[0].nextOrder: 0)})
   }
 
@@ -252,6 +254,7 @@ this.newList = props.listItems;
   }
 
    render() {
+     this.lastItem=this.state.listItems.slice(-1)[0];
     return (
       <div className="NewList" >
         <FormGroup >
@@ -298,7 +301,7 @@ this.newList = props.listItems;
           isLoading={this.state.isLoading}
           text="OK"
           loadingText="Saving..."
-        /> <Gantt listid={this.props.match.params.id}></Gantt>
+        /> <GanttChart listid={this.props.match.params.id}></GanttChart>
     </div>
         );
   }

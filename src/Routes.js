@@ -10,6 +10,7 @@ import Todos from "./containers/Todos";
 import Todo from "./containers/List";
 import Note from "./containers/Note";
 import NewTodo from "./containers/NewTodo";
+import NewProject from "./containers/NewProject";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 import Settings from "./containers/Settings";
@@ -59,8 +60,14 @@ export default ({ childProps }) => (
       component={Todo}
       props={childProps}
     />
+    <AuthenticatedRoute
+      path="/projects/new"
+      exact
+      component={NewProject}
+      props={childProps}
+    />
           <AuthenticatedRoute
-      path="/todos"
+      path="/projects"
       exact
       component={Todos}
       props={childProps}

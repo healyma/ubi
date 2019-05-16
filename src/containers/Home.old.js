@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
-import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import ProjectsCard from "./ProjectsCard";
-import TasksCard from "./TasksCard";
 import "./Home.css";
 
 export default class Home extends Component {
@@ -38,27 +36,21 @@ renderLander() {
 
 renderHome(){
   return (<div>
-<Accordion defaultActiveKey="0">
-<Card>
-    <Accordion.Toggle as={Card.Header} eventKey="0">
-      My Tasks
-    </Accordion.Toggle>
-    <Accordion.Collapse eventKey="0">
-      <TasksCard></TasksCard>
-    </Accordion.Collapse>
-  </Card>
-  <Card>
-    <Accordion.Toggle as={Card.Header} eventKey="1">
-      My Projects
-    </Accordion.Toggle>
-    <Accordion.Collapse eventKey="1">
-      
-    <ProjectsCard></ProjectsCard>
-    </Accordion.Collapse>
-  </Card>
- 
-</Accordion>
 
+    <ProjectsCard></ProjectsCard>
+<Card >
+  <Card.Img variant="top" src="holder.js/100px180" />
+  <Card.Body>
+    <Card.Title>My Tasks</Card.Title>
+    <Card.Text>
+    [ Tasks assigned to me]
+      [ Summary, complete, open/current and upcoming]
+      [list open tasks  -> project->(sublists)->task]
+      [button to start task, complete task]
+    </Card.Text>
+    <Button variant="primary">Go somewhere</Button>
+  </Card.Body>
+</Card>
   <ListGroup
   ><LinkContainer
             key="newNote"

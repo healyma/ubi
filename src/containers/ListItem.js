@@ -50,9 +50,9 @@ export default class todoItemItem extends Component {
         {" "}
         {this.props.item.TK_Complete ? (
           
-          <Box></Box>
-        ) : (
           <span className="oi oi-check"></span>
+        ) : (
+          <Box></Box>
         )}
       </div>
     </div>

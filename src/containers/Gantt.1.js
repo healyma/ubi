@@ -2,8 +2,7 @@ import React,{ Component } from 'react';
 import ReactGantt from 'gantt-for-react';
 import { API } from "aws-amplify";
 import { isArray } from 'util';
-
-export default class GanttChart extends Component {
+export default class Gantt extends Component {
     constructor(props) {
         super(props);
         var today = new Date();

@@ -10,7 +10,9 @@ export default class NewTodoItem extends Component {
 
   constructor(props) {
     super(props);
+    console.log(this.props)
     this.state = {
+      lastItem: props.lastItem,
       todoItem: {
           todoItemId:null,
           itemName:null,
@@ -22,6 +24,7 @@ export default class NewTodoItem extends Component {
 
   async componentDidMount() {
     this.email = (await Auth.currentUserInfo()).attributes.email;
+    console.log(this.state)
   }
 blurHandle = event => {
   console.log(this.state);
@@ -49,6 +52,7 @@ async saveItem(){
    
 }
 render(){
+  console.log(this.state.lastItem)
     return (<ListGroupItem key={1000000}>
         <FormGroup controlId="itemName">
         <div
@@ -80,7 +84,6 @@ render(){
             }}
           />
           </div>
-          
         </FormGroup>
       </ListGroupItem>
       );
