@@ -34,7 +34,6 @@ handleSubmit = async event => {
     await Auth.signIn(this.state.email, this.state.password);
     this.props.userHasAuthenticated(true);
   } catch (e) {
-    alert(e.message);
     this.setState({ isLoading: false });
   }
 }
@@ -43,7 +42,7 @@ handleSubmit = async event => {
     return (
       <div className="Login">
         <form onSubmit={this.handleSubmit}>
-          <FormGroup controlId="email" bsSize="large">
+          <FormGroup controlId="email" bssize="large">
             <FormLabel>Email</FormLabel>
             <FormControl
               autoFocus
@@ -52,7 +51,7 @@ handleSubmit = async event => {
               onChange={this.handleChange}
             />
           </FormGroup>
-          <FormGroup controlId="password" bsSize="large">
+          <FormGroup controlId="password" bssize="large">
             <FormLabel>Password</FormLabel>
             <FormControl
               value={this.state.password}
@@ -62,7 +61,7 @@ handleSubmit = async event => {
           </FormGroup>
           <LoaderButton
   block
-  bsSize="large"
+  bssize="large"
   disabled={!this.validateForm()}
   type="submit"
   isLoading={this.state.isLoading}

@@ -231,6 +231,7 @@ export default class DroppableList extends Component {
   }
 
   render() {
+    console.log(this.props.listItems)
     return (
       <Droppable droppableId="droppable-1">
       {(provided, snapshot) => (
@@ -239,7 +240,7 @@ export default class DroppableList extends Component {
           {...provided.droppableProps}
         >
           {[{}].concat(this.props.listItems).map((item) => 
-         ( (item &&<DraggableItem delete={this.props.delete} update={this.props.update} item={item} key={item.LI_ItemID+ item.LI_ItemType}></DraggableItem>)))}
+         ( (item &&<DraggableItem delete={this.props.delete} update={this.props.update} item={item} key={item.LI_ID}></DraggableItem>)))}
 
           {provided.placeholder}
         </div>

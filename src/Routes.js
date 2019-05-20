@@ -67,7 +67,7 @@ export default ({ childProps }) => (
       props={childProps}
     />
           <AuthenticatedRoute
-      path="/projects"
+      path="/todos"
       exact
       component={Todos}
       props={childProps}

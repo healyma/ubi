@@ -11,12 +11,12 @@ export default class TodoItemEdit extends Component {
       locale: {
         'format': 'DD/MM/YYYY'
     },
-        TK_Name:this.props.item.TK_Name,
-        TK_Complete:this.props.item.TK_Complete,
-        TK_Assign_UserID:this.props.item.TK_Assign_UserID,
-        TK_ID:this.props.item.TK_ID,
-        TK_Start:this.props.item.TK_Start,
-        TK_End:this.props.item.TK_End,
+        LI_Name:this.props.item.LI_Name,
+        LI_PercentComplete:this.props.item.LI_PercentComplete,
+        LI_Assign_UserID:this.props.item.LI_Assign_UserID,
+        LI_ID:this.props.item.LI_ID,
+        LI_StartScheduled:this.props.item.LI_StartScheduled,
+        LI_EndScheduled:this.props.item.LI_EndScheduled,
         LI_DependsJSON: this.props.item.LI_DependsJSON,
         LI_ItemID: this.props.item.LI_ItemID,
         LI_ItemType: this.props.item.LI_ItemType,
@@ -25,7 +25,7 @@ export default class TodoItemEdit extends Component {
         LI_dependantsJSON: this.props.item.LI_dependantsJSON
       
     }
-    console.log(new Date(this.props.item.TK_End).toISOString().split('T')[0]);
+    console.log(new Date(this.props.item.LI_EndScheduled).toISOString().split('T')[0]);
   }
   handleChange = event => {
     this.setState({
@@ -50,12 +50,12 @@ export default class TodoItemEdit extends Component {
           <FormGroup controlId="todoItemName">
           <FormControl
             ref={ref => {
-              this.TK_Name = ref;
+              this.LI_Name = ref;
               
             }}
               onChange={this.handleChange}
 
-              defaultValue={this.state.TK_Name}
+              defaultValue={this.state.LI_Name}
             type="text"
           />
         </FormGroup>
@@ -66,12 +66,12 @@ export default class TodoItemEdit extends Component {
         <Row>
           <Col xs={3}>Assigned to:</Col>
           <Col xs={6}>
-          <FormGroup controlId="TK_Assign_UserID">
+          <FormGroup controlId="LI_Assign_UserID">
           <FormControl
             ref={ref => {
-              this.TK_Assign_UserID= ref;
+              this.LI_Assign_UserID= ref;
             }}
-            defaultValue={this.state.TK_Assign_UserID}
+            defaultValue={this.state.LI_Assign_UserID}
               onChange={this.handleChange}
           />
           </FormGroup>
@@ -92,13 +92,13 @@ export default class TodoItemEdit extends Component {
         <Row>
           <Col xs={3}>Start:</Col>
           <Col xs={6}>
-          <FormGroup controlId="TK_Start">
+          <FormGroup controlId="LI_StartScheduled">
           <FormControl
             ref={ref => {
-              this.TK_Start= ref;
+              this.LI_StartScheduled= ref;
             }}
             type="date"
-            defaultValue={new Date(this.props.item.TK_Start).toISOString().split('T')[0]}
+            defaultValue={new Date(this.props.item.LI_StartScheduled).toISOString().split('T')[0]}
               onChange={this.handleChange}
           />
           </FormGroup>
@@ -119,13 +119,13 @@ export default class TodoItemEdit extends Component {
         <Row>
           <Col xs={3}>End:</Col>
           <Col xs={6}>
-          <FormGroup controlId="TK_End">
+          <FormGroup controlId="LI_EndScheduled">
           <FormControl
             ref={ref => {
-              this.TK_End= ref;
+              this.LI_EndScheduled= ref;
             }}
             type="date"
-            defaultValue={new Date(this.props.item.TK_End).toISOString().split('T')[0]}
+            defaultValue={new Date(this.props.item.LI_EndScheduled).toISOString().split('T')[0]}
               onChange={this.handleChange}
           />
           </FormGroup>
@@ -170,12 +170,12 @@ export default class TodoItemEdit extends Component {
                     event.preventDefault();
                     console.log(this.state);
                     this.props.update({
-                        TK_Name:this.state.todoItemName,
-                        TK_Complete:this.props.item.TK_Complete,
-                        TK_Assign_UserID:this.state.TK_Assign_UserID,
-                        TK_ID:this.props.item.TK_ID,
-                        TK_Start:this.state.TK_Start,
-                        TK_End:this.state.TK_End,
+                        LI_Name:this.state.todoItemName,
+                        LI_PercentComplete:this.props.item.LI_PercentComplete,
+                        LI_Assign_UserID:this.state.LI_Assign_UserID,
+                        LI_ID:this.props.item.LI_ID,
+                        LI_StartScheduled:this.state.LI_StartScheduled,
+                        LI_EndScheduled:this.state.LI_EndScheduled,
                         LI_DependsJSON: this.props.item.LI_DependsJSON,
                         LI_ItemID: this.props.item.LI_ItemID,
                         LI_ItemType: this.props.item.LI_ItemType,

@@ -121,14 +121,14 @@ renderTodosLists(todos) {
       i !== 0
         ? <LinkContainer
             key={aTodo.LT_ID}
-            to={`/todos/${aTodo.LT_ID}`}
+            to={`/todos/${aTodo.LI_ID}`}
           >
             <ListGroupItem>
             <div className="d-flex w-100 justify-content-between">
-      <h5 className="mb-1">{ aTodo.LT_Name }</h5>
+      <h5 className="mb-1">{ aTodo.LI_Name }</h5>
       <small>3 days ago</small>
     </div>
-              {"Created: " + new Date(aTodo.LT_Created).toLocaleString()}
+              {"Created: " + new Date(aTodo.LI_Created).toLocaleString()}
             </ListGroupItem>
           </LinkContainer>
         : 

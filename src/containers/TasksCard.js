@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import {  Button } from "react-bootstrap";
 import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import Card from "react-bootstrap/Card";
-import { Link } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 import "./Home.css";
 
 export default class TasksCard extends Component {

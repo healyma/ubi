@@ -18,7 +18,7 @@ export default class SubList extends Component {
       email:"",
       listItems:[],
       List: {
-        LT_Name:""
+        LI_Name:""
       }
     };
   }
@@ -43,10 +43,10 @@ export default class SubList extends Component {
   }
 
   getList() {
-    return API.get("todos", `/list/${this.props.item.LI_ItemID}`);
+    return API.get("todos", `/list/${this.props.item.LI_ID}`);
   }
   getListItems(){
-    return API.get("todos", `/list-contents/${this.props.item.LI_ItemID}`);
+    return API.get("todos", `/list-contents/${this.props.item.LI_ID}`);
 
   }
 
@@ -69,10 +69,10 @@ handleFileChange = event => {
 }
 
 async saveList(List) {
-  this.state.List.LT_Name = this.LT_Name.value;
+  this.state.List.LI_Name = this.LI_Name.value;
   await this.setState({List: this.state.List});
   return API.put("todos", `/list/${this.state.listID}`, {
-    body: {LT_ID:this.state.listID,LT_Name:this.LT_Name.value}
+    body: {LI_ID:this.state.listID,LI_Name:this.LI_Name.value}
   });
 }
 
@@ -84,7 +84,7 @@ handleSubmit = async event => {
     return;
   }
   
-  await this.setState({ isLoading: true, List:{listName:this.LT_Name.value}} );
+  await this.setState({ isLoading: true, List:{listName:this.LI_Name.value}} );
 
   try {
 
@@ -245,9 +245,9 @@ render() {
               <Col xs={10}>
       <FormGroup >
             <FormControl
-            ref={input => this.LT_Name = input}
+            ref={input => this.LI_Name = input}
               onChange={this.handleChange}
-              defaultValue={this.state.List.LT_Name}
+              defaultValue={this.state.List.LI_Name}
             />
             </FormGroup>
           
@@ -282,7 +282,7 @@ render() {
        
           {[{}].concat(this.state.listItems).map((item,index) => 
          (item.LI_ItemType==='T' ?
-         (item.TK_Assign_UserID===this.state.email ?
+         (item.LI_AssignedToEmail===this.state.email ?
            <ListItem item={item} delete={this.deleteItem} update={this.updateItem} key={this.props.item.LI_ItemID + "_____" + index}></ListItem>
            :
            <ReadonlyListItem ListItem={item} delete={this.deleteItem} update={this.updateItem} key={this.props.item.LI_ItemID + "_____" + index}></ReadonlyListItem>

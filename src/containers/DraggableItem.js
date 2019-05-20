@@ -25,14 +25,14 @@ export default class DraggableItem extends Component {
   }
   blurHandle = event => { };
   saveItem = async () => {
-    this.props.item.TK_Complete = !this.props.item.TK_Complete;
+    this.props.item.LI_PercentComplete = !this.props.item.LI_PercentComplete;
     await this.props.update(this.props.item);
     await this.setState({ todoItem: this.props.item });
   }
   render() {
-    if (this.props.item.LI_ItemID) {
+    if (this.props.item.LI_ID) {
       return (
-        <Draggable draggableId={"draggable-" + this.props.item.LI_ItemType + this.props.item.LI_ItemID} index={this.props.item.LI_Order} key={"draggable-" + this.props.item.LI_ItemType + this.props.item.LI_ItemID}>
+        <Draggable draggableId={"draggable-" + this.props.item.LI_ItemID} index={this.props.item.LI_Order} key={"draggable-" + this.props.item.LI_ID}>
           {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
@@ -41,13 +41,13 @@ export default class DraggableItem extends Component {
             >
               {this.props.item.LI_ItemType === "T" ?
                 (
-                  (this.props.item.TK_Assign_UserID === this.state.email ?
-                    <ListItem key={"draggable-" + this.props.item.LI_ItemType+ this.props.item.LI_ItemID} item={this.props.item} delete={this.props.delete} update={this.props.update} ></ListItem>
+                  (this.props.item.LI_AssignedToEmail === this.state.email ?
+                    <ListItem key={"draggable-" + this.props.item.LI_ID} item={this.props.item} delete={this.props.delete} update={this.props.update} ></ListItem>
                     :
-                    <ReadonlyListItem key={"draggable-" + this.props.item.LI_ItemType+ this.props.item.LI_ItemID} ListItem={this.props.item} delete={this.props.delete} update={this.props.update}></ReadonlyListItem>
+                    <ReadonlyListItem key={"draggable-" +  this.props.item.LI_ID} ListItem={this.props.item} delete={this.props.delete} update={this.props.update}></ReadonlyListItem>
                   )
                 )
-                : (<SubList key={"draggable-"+ this.props.item.LI_ItemType + this.props.item.LI_ItemID} item={this.props.item}></SubList>)}
+                : (<SubList key={"draggable-"+  this.props.item.LI_ID} item={this.props.item}></SubList>)}
 
 
             </div>
@@ -60,10 +60,10 @@ export default class DraggableItem extends Component {
 
   }
   renderx() {
-    if (this.props.item.TK_Name)
+    if (this.props.item.LI_Name)
       return (
         <ListGroupItem
-          key={this.props.item.TK_ID}
+          key={this.props.item.LI_ID}
           style={{ borderBottom: "0px", padding: "0px" }}
         >
           <div style={{ border: "0px" }} className="[ form-group ]" >
@@ -78,7 +78,7 @@ export default class DraggableItem extends Component {
                 }}
               >
                 {" "}
-                {this.props.item.TK_Complete ? (
+                {this.props.item.LI_PercentComplete ? (
                   <span className="[ glyphicon glyphicon-ok ]" />
                 ) : (
                     <span className="[ glyphicon glyphicon-unchecked ]" />
@@ -124,7 +124,7 @@ export default class DraggableItem extends Component {
               >
                 <span
                   style={
-                    this.props.item.TK_Complete
+                    this.props.item.LI_PercentComplete
                       ? { textDecoration: "line-through" }
                       : {}
                   }
@@ -132,7 +132,7 @@ export default class DraggableItem extends Component {
                     this.saveItem();
                   }}
                 >
-                  {!this.state.expand && this.props.item.TK_Name}
+                  {!this.state.expand && this.props.item.LI_Name}
                 </span>
               </span>
             </div>

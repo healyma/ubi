@@ -1,10 +1,9 @@
 import React, { Component, Fragment } from "react";
 import {  withRouter } from "react-router-dom";
-import { Auth } from "aws-amplify";
-import { Nav, NavItem,  NavDropdown } from "react-bootstrap";
+import {Auth} from "aws-amplify";
+import { Nav,  NavDropdown } from "react-bootstrap";
 import Navbar from "react-bootstrap/Navbar"
 import { LinkContainer } from "react-router-bootstrap";
-import config from "./config";
 
 import "./App.css";
 import Routes from "./Routes";
@@ -24,11 +23,12 @@ async componentDidMount() {
     var auth= await Auth.currentSession();
     this.userHasAuthenticated(true);
     console.log(auth.getAccessToken().getJwtToken());
+
     console.log(auth.getIdToken().payload);
   }
   catch(e) {
     if (e !== 'No current user') {
-      alert(e);
+      console.log(e);
     }
   }
 

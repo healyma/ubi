@@ -7,7 +7,6 @@ import {
 import { API } from "aws-amplify";
 import LoaderButton from "../components/LoaderButton";
 import "./NewTodo.css";
-import TodoItem from "./ListItem";
 import NewTodoItem from "./NewListItem";
 
 export default class NewTodo extends Component {

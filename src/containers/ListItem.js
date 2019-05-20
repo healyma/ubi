@@ -31,7 +31,7 @@ export default class todoItemItem extends Component {
   }
   blurHandle = event => {};
   saveItem=  async() =>{
-    this.props.item.TK_Complete = !this.props.item.TK_Complete;
+    this.props.item.LI_PercentComplete = Math.abs(100-this.props.item.LI_PercentComplete);
     await this.props.update(this.props.item);
     await this.setState({ todoItem: this.props.item });
   }
@@ -48,9 +48,9 @@ export default class todoItemItem extends Component {
         }}
       >
         {" "}
-        {this.props.item.TK_Complete ? (
+        {this.props.item.LI_PercentComplete===100 ? (
           
-          <span className="oi oi-check"></span>
+          <span className="oi oi-task"></span>
         ) : (
           <Box></Box>
         )}
@@ -95,7 +95,7 @@ export default class todoItemItem extends Component {
       >
         <span
           style={
-            this.props.item.TK_Complete
+            this.props.item.LI_PercentComplete
               ? { textDecoration: "line-through" }
               : {}
           }
@@ -103,7 +103,7 @@ export default class todoItemItem extends Component {
             this.saveItem();
           }}
         >
-        {!this.state.expand && <span> {this.props.item.TK_Name} </span>}
+        {!this.state.expand && <span> {this.props.item.LI_Name} </span>}
         </span>
       </span>
     </div>

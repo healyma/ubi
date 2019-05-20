@@ -6,7 +6,6 @@ import { isArray } from 'util';
 export default class GanttChart extends Component {
     constructor(props) {
         super(props);
-        var today = new Date();
         this.tasks=null;
         this.state={
             viewMode:"Day"
@@ -19,11 +18,11 @@ export default class GanttChart extends Component {
         this.tasks =[]
         tasks.forEach(task => {
             this.tasks.push({
-                id:"__task" + task.TK_ID,
-                name:task.TK_Name,
-                start: new Date(task.TK_Start==null? Date.now():task.TK_Start),
-                end: new Date (task.TK_End==null? Date.now() + 100000000 :task.TK_End),
-                progress: task.TK_Complete,
+                id:"__task" + task.LI_ID,
+                name:task.LI_Name,
+                start: new Date(task.LI_Start==null? Date.now():task.LI_Start),
+                end: new Date (task.LI_End==null? Date.now() + 100000000 :task.LI_End),
+                progress: task.LI_Complete,
                 dependencies:task.LI_DependsJSON
             });
         });

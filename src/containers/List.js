@@ -22,7 +22,7 @@ this.newList = props.listItems;
       email: "",
       listItems: [],
       List: {
-        LT_Name: ""
+        LI_Name: ""
       }
     };
   }
@@ -76,11 +76,11 @@ this.newList = props.listItems;
   }
 
   async saveList(List) {
-    this.state.List.LT_Name = this.LT_Name.value;
+    this.state.List.LI_Name = this.LI_Name.value;
     await this.setState({ List: this.state.List });
-    console.log({ LT_ID: this.state.listID, LT_Name: this.LT_Name.value });
+    console.log({ LI_ID: this.state.listID, LI_Name: this.LI_Name.value });
     return API.put("todos", `/list/${this.state.listID}`, {
-      body: { LT_ID: this.state.listID, LT_Name: this.LT_Name.value }
+      body: { LI_ID: this.state.listID, LI_Name: this.LI_Name.value }
     });
   }
 
@@ -92,7 +92,7 @@ this.newList = props.listItems;
       return;
     }
 
-    await this.setState({ isLoading: true, List: { listName: this.LT_Name.value } });
+    await this.setState({ isLoading: true, List: { listName: this.LI_Name.value } });
 
     try {
 
@@ -259,9 +259,9 @@ this.newList = props.listItems;
       <div className="NewList" >
         <FormGroup >
           <Form.Control type="text" placeholder="New task"
-            ref={input => this.LT_Name = input}
+            ref={input => this.LI_Name = input}
             onChange={this.handleChange}
-            defaultValue={this.state.List.LT_Name}
+            defaultValue={this.state.List.LI_Name}
           />
         </FormGroup>
 

@@ -15,15 +15,15 @@ export default class todoItemItem extends Component {
   }
   blurHandle = event => {};
   saveItem=  async() =>{
-    this.props.ListItem.TK_Complete = !this.props.ListItem.TK_Complete;
+    this.props.ListItem.LI_PercentComplete = !this.props.ListItem.LI_PercentComplete;
     await this.props.update(this.props.ListItem);
     await this.setState({ todoItem: this.props.ListItem });
   }
   render() {
-    if (this.props.ListItem.TK_Name)
+    if (this.props.ListItem.LI_Name)
       return (
         <ListGroupItem
-          key={this.props.ListItem.TK_ID}
+          key={this.props.ListItem.LI_ID}
           style={{ borderBottom: "0px", padding: "0px" }}
         >
           <div style={{ border: "0px" }} className="[ form-group ]" >
@@ -55,7 +55,7 @@ export default class todoItemItem extends Component {
               >
                 <span
                   style={
-                    this.props.ListItem.TK_Complete
+                    this.props.ListItem.LI_PercentComplete
                       ? { textDecoration: "line-through" }
                       : {}
                   }
@@ -63,7 +63,7 @@ export default class todoItemItem extends Component {
                     this.saveItem();
                   }}
                 >
-                 <span>{this.props.ListItem.TK_Name}<br/> <i>assigned to: {this.props.ListItem.TK_Assign_UserID }</i></span>
+                 <span>{this.props.ListItem.LI_Name}<br/> <i>assigned to: {this.props.ListItem.LI_AssignedToEmail }</i></span>
                     
                 </span>
               </span>
