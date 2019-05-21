@@ -1,0 +1,35 @@
+.complete{
+    border: 1px solid darkgray;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: lightgray;
+}
+.open{
+    border: 1px solid darkgreen;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: lightgreen;
+}
+.notAvailable{
+    border: 1px solid black;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: lightgreen;
+}
+.overdue{
+    border: 1px solid red;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: rgb(253, 93, 93);
+}
+.blocked{
+    border: 1px solid blue;
+    border-radius: 2px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: lightblue;
+}

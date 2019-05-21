@@ -24,7 +24,6 @@ async componentDidMount() {
     this.userHasAuthenticated(true);
     console.log(auth.getAccessToken().getJwtToken());
 
-    console.log(auth.getIdToken().payload);
   }
   catch(e) {
     if (e !== 'No current user') {

@@ -4,6 +4,7 @@ import ToggleButton from "react-bootstrap/ToggleButton";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import Card from "react-bootstrap/Card";
+import Todos from "./Todos";
 import "./Home.css";
 
 export default class TasksCard extends Component {
@@ -20,6 +21,7 @@ export default class TasksCard extends Component {
       <ToggleButton value={2}>My Available Tasks</ToggleButton>
       <ToggleButton value={3}>My Incompete Tasks</ToggleButton>
       <ToggleButton value={4}>Everything</ToggleButton>
+      <Todos></Todos>
     </ToggleButtonGroup>
   </ButtonToolbar>
         [ Tasks assigned to me]

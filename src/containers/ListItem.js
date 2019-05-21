@@ -27,7 +27,8 @@ export default class todoItemItem extends Component {
   }
 
   async componentDidMount() {
-    this.setState({ todoItem: this.props.todoItem });
+    
+  this.setState({ todoItem: this.props.item });
   }
   blurHandle = event => {};
   saveItem=  async() =>{
@@ -53,6 +54,7 @@ export default class todoItemItem extends Component {
           <span className="oi oi-task"></span>
         ) : (
           <Box></Box>
+          
         )}
       </div>
     </div>
@@ -103,7 +105,7 @@ export default class todoItemItem extends Component {
             this.saveItem();
           }}
         >
-        {!this.state.expand && <span> {this.props.item.LI_Name} </span>}
+        {!this.state.expand && <span> &nbsp;{this.state.todoItem.LI_Name} </span>}
         </span>
       </span>
     </div>

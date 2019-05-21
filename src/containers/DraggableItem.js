@@ -1,17 +1,19 @@
 import React, { Component } from "react";
-import { Auth } from "aws-amplify";
+import { API,Auth } from "aws-amplify";
 import { ListGroupItem } from "react-bootstrap";
 import TodoItemEdit from "./TodoItemEdit";
 import ListItem from "./ListItem";
 import ReadonlyListItem from "./ReadonlyListItem";
 import SubList from "./SubList";
 import { Draggable } from 'react-beautiful-dnd';
-
+import "./ListItem.css"
 
 export default class DraggableItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      dependencies:[],
+      itemStatus:"notAvailable",
       expand: false,
       todoItem: {}
     };
@@ -20,6 +22,40 @@ export default class DraggableItem extends Component {
 
   async componentDidMount() {
     this.setState({ todoItem: this.props.todoItem });
+    const item=this.props.item;
+    if(item.LI_PercentComplete <100&& item.LI_DependsJSON){
+      var itemStatus="open";
+    API.get("todos","/dependency_status/" + item.LI_DependsJSON).then((deps)=>{
+      var depArr=[];
+      var blocked=false;
+      var overdue=true;
+      deps.forEach((dep)=>{
+        if(dep.LI_PercentComplete<100){
+          blocked=true;
+        }else{
+          //number off days it's been open
+          if(Math.round((Date.now()-dep.LI_LastUpdate))/(24*60*60*1000)<=2){
+            overdue=false;
+          }
+        }
+        if(blocked){
+          itemStatus="blocked";
+        }else if(overdue){
+          itemStatus="overdue";
+        }
+      })
+      this.setState({itemStatus: itemStatus});
+    
+    })
+
+    
+  }else{
+    if(item.LI_PercentComplete>=100){
+      this.setState({itemStatus:"complete"});
+    }else{
+      this.setState({itemStatus:"open"});
+    }
+  }
     const user = await Auth.currentUserInfo();
     await this.setState({ email: user.attributes.email });
   }
@@ -32,9 +68,10 @@ export default class DraggableItem extends Component {
   render() {
     if (this.props.item.LI_ID) {
       return (
-        <Draggable draggableId={"draggable-" + this.props.item.LI_ItemID} index={this.props.item.LI_Order} key={"draggable-" + this.props.item.LI_ID}>
+        <Draggable draggableId={"draggable-" + this.props.item.LI_ItemID} index={this.props.item.LI_Order} key={"draggable-" + this.props.item.LI_ID}  >
           {(provided, snapshot) => (
             <div
+            className={this.state.itemStatus}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
@@ -42,7 +79,7 @@ export default class DraggableItem extends Component {
               {this.props.item.LI_ItemType === "T" ?
                 (
                   (this.props.item.LI_AssignedToEmail === this.state.email ?
-                    <ListItem key={"draggable-" + this.props.item.LI_ID} item={this.props.item} delete={this.props.delete} update={this.props.update} ></ListItem>
+                    <ListItem key={"draggable-" + this.props.item.LI_ID} item={this.props.item} delete={this.props.delete} update={this.props.update}  className={this.state.itemStatus}></ListItem>
                     :
                     <ReadonlyListItem key={"draggable-" +  this.props.item.LI_ID} ListItem={this.props.item} delete={this.props.delete} update={this.props.update}></ReadonlyListItem>
                   )

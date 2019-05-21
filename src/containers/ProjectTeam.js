@@ -58,6 +58,21 @@ export default class ProjectTemplate extends Component{
                     <Col><Button variant="outline-dark"><span className="oi oi-pencil"></span></Button></Col>
                 </Row>
                 )))}
+                  <Row>
+                    <Col>
+                        [name]
+                    </Col>
+                    <Col>
+                        [email]
+                    </Col>
+                    <Col>
+                        [roles]                    
+                    </Col>
+                    <Col>
+                        [need to invite?]
+                    </Col>
+                    <Col><Button variant="outline-dark"><span className="oi oi-plus"></span></Button></Col>
+                </Row>
             </Container>
         );
     }

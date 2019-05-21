@@ -3,24 +3,19 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
+import { timingSafeEqual } from "crypto";
 export default class ProjectTemplate extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            ddIndustry: 0,
+            ddIndustry: (props.industry?props.industry:0),
+            ddTemplate:(props.template?props.template:0),
             templates: [
-                [
-                    { value: 1, name: "Blank" }
-                ],
-                [{ value: 3, name: "Self build" },
-                { value: 4, name: "something else" }
-
-                ],
-                [
-                    { value: 5, name: "Migration to Microservices" },
-                    { value: 6, name: "MS Exchange upgrade" }
-
-                ]
+                {industry:0, value: 0, name: "Blank", description:"An empty project where you can pick and choose the items to include" },
+                {industry:1, value: 1, name: "Self build", description:"A template based on a self build project" },
+                {industry:1, value: 2, name: "something else",description:"some other type of construction project" },
+                {industry:2, value: 3, name: "Migration to Microservices", description:"A project template based on the typical tasks associated with migrating a legacy solution to microservices" },
+                {industry:2, value: 4, name: "MS Exchange upgrade", description:"This one is based on upgrading an enterprise solution (Microsoft Exchange)" }
             ]
         }
     }
@@ -30,13 +25,10 @@ export default class ProjectTemplate extends Component{
             [event.target.id]: event.target.value
         });
     }
-    updateTemplates = event => {
-        this.setState({
-            [event.target.id]: event.target.value
-        });
-    }
+
     render(){
         return (
+
             <Form>
                             <div><h3>Select an industry and template</h3></div>
                             <Container>
@@ -44,7 +36,7 @@ export default class ProjectTemplate extends Component{
                                     <Col>
                                         <Form.Group controlId="ddIndustry">
                                             <Form.Label>Industry</Form.Label>
-                                            <Form.Control as="select" onChange={this.updateTemplates}
+                                            <Form.Control as="select" onChange={this.handleChange}
                                                 ref={ref => {
                                                     this.ddIndustry = ref;
                                                 }}
@@ -56,16 +48,21 @@ export default class ProjectTemplate extends Component{
                                             </Form.Control>
                                         </Form.Group>
 
-                                        <Form.Group controlId="formGridState">
+                                        <Form.Group controlId="ddTemplate">
                                             <Form.Label>Template</Form.Label>
-                                            <Form.Control as="select">
-                                                <option value={0} key={0}>...</option>
-                                                {[{}].concat(this.state.templates[this.state.ddIndustry]).map((item) =>
-                                                    (item.value && <option value={item.value} key={item.value}>{item.name}</option>))}
+                                            <Form.Control as="select"  onChange={this.handleChange}
+                                            ref={ref => {
+                                                this.ddTemplate = ref;
+                                            }}
+                                            defaultValue={this.state.industry}>
+                                            <option value={0}>---</option>
+                                                {[{}].concat(this.state.templates).map((item) =>
+                                                    (item.industry==this.state.ddIndustry && <option value={item.value} key={item.value}>{item.name}</option>))}
                                             </Form.Control>
                                         </Form.Group>
                                     </Col>
                                     <Col>
+                                    {(this.state.templates[this.state.ddTemplate]?this.state.templates[this.state.ddTemplate].description:"please select a template")}
                                     </Col>
                                 </Row>
                             </Container>
