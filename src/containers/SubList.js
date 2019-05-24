@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { API, Auth } from "aws-amplify";
-import { FormGroup, FormControl, ListGroupItem,Row, Col } from "react-bootstrap";
+import { FormGroup, ListGroupItem,Row, Col } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import LoaderButton from "../components/LoaderButton";
-import config from "../config";
+import Form from "react-bootstrap/Form";
+import Button from "react-bootstrap/Button";
 import "./Lists.css";
 import ListItem from "./ListItem";
 import ReadonlyListItem from './ReadonlyListItem';
@@ -14,7 +14,8 @@ export default class SubList extends Component {
     
     this.state = {
       expand:false,
-      listID:0,
+      user:{},
+      listID:(props.list?props.list.LI_LTID:0),
       email:"",
       listItems:[],
       List: {
@@ -23,23 +24,31 @@ export default class SubList extends Component {
     };
   }
  
-  async componentDidMount() {
+  componentDidMount() {
+    Auth.currentUserInfo().then((usr)=>{
+      var nextOrder= (this.state.listItems[0]? this.state.listItems[0].nextOrder: 0);
+      this.setState(
+        {
+          user:usr, 
+          email:usr.attributes.email,
+          listID: this.props.item.LI_ID,
+          nextOrder:nextOrder
+        });
+     
+    });
     this.loadData();
-    const user = await Auth.currentUserInfo();
-    await this.setState({email: user.attributes.email});
-    if(this.props.match){
-     await this.setState({listID: this.props.item.LI_ItemID});
-    }else if(this.props.item.LI_ItemID){
-      await this.setState({listID:this.props.item.LI_ItemID});
-    
-    }
-
   }
-  async loadData(){
-       await  this.setState({
-           List: await this.getList(),
-           listItems: await this.getListItems()
-         })  
+   loadData(){
+    this.getList().then((list)=>{
+      this.getListItems().then((listItems)=>{
+        var lastItem=listItems[listItems.length-1]
+        this.setState({
+          List: list ,
+          listItems: listItems 
+        })  
+      })
+    })
+        
   }
 
   getList() {
@@ -79,21 +88,10 @@ async saveList(List) {
 handleSubmit = async event => {
   event.preventDefault();
 
-  if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-    alert(`Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE/1000000} MB.`);
-    return;
-  }
-  
-  await this.setState({ isLoading: true, List:{listName:this.LI_Name.value}} );
-
-  try {
-
-    await this.saveList(this.state.List);
-    this.props.history.push("/");
-  } catch (e) {
-    alert(e);
+  this.setState({ isLoading: true, List:{listName:this.LI_Name.value}} );
+  this.saveList(this.state.List).then(()=>{
     this.setState({ isLoading: false });
-  }
+  })
 }
 ListLists(){
   return API.get("Lists", "/lists");
@@ -170,10 +168,6 @@ newItem = async item =>{
   this.loadData();
 
 }
-
-
-SaveList() {}
-
 blurHandle = event => {
   this.addListItem();
 };
@@ -187,49 +181,10 @@ addListItem() {
     this.saveList(this.state.List);
   }
 }
-renderItem(item,i){
-    if(item.itemName){
-      return (
-          <ListGroupItem key={i} style={{borderBottom:"0px", padding: "0px"}}>
-            <div
-              style={{ border:"0px"}}
-              className="[ form-group ]"
-            >
-              <div style={{float: "left", width: "50px", border: "none"}}>
-              <label  onClick={event => {item.completed=!item.completed;  this.setState({listitems:this.List.listItems})}}
 
-onBlur={this.blurHandle}
-                    htmlFor="fancy-checkbox-default"
-                    className="[ btn btn-default ]"
-                  >
-                  {(item.completed
-                  ?
-                    <span className="[ glyphicon glyphicon-ok ]"/>
-                  :
-                    <span className="[ glyphicon glyphicon-unchecked ]"/>
-                  )}
-                  </label>
-               
-  
-              </div>
-                <div className="[ btn-group ]">
-                  
-                </div>
-                <div>
-                 <span onClick={event => {item.completed=!item.completed;  this.setState({listitems:this.listItems})}} >
-                    {item.itemName} </span>
-                </div>
-            </div>
-          </ListGroupItem>
-      )
-    }else{
-        return "";
-    }
-    
-}
 render() {
   return (
-    <div className="subList"  key={this.props.item.LI_ItemID + "_____" }>
+    <div className="subListContainer"  key={this.props.item.LI_ID + "_____" }>
       <form onSubmit={this.handleSubmit}>
       <Row>
           <Col xs={1}><label
@@ -243,13 +198,29 @@ render() {
               </label></Col>
           
               <Col xs={10}>
-      <FormGroup >
-            <FormControl
+        <FormGroup >
+        <Button className="w-25"
+        style={{
+          float: "right",
+          verticalAlign: "middle",
+          align: "left",
+          border: "1px",
+          paddingLeft:"10px"
+        }}
+          disabled={!this.validateForm()}
+          type="submit"
+          onClick={this.handleSubmit}
+        > <span className="oi oi-pencil"></span></Button>
+        <div className="w-75">
+          <Form.Control type="text" placeholder="New task"
             ref={input => this.LI_Name = input}
-              onChange={this.handleChange}
-              defaultValue={this.state.List.LI_Name}
-            />
-            </FormGroup>
+            onChange={this.handleChange}
+            defaultValue={this.state.List.LI_Name}
+            
+          />
+          </div>
+          </FormGroup>
+       
           
             </Col>
             <Col xs={1}>
@@ -289,22 +260,11 @@ render() {
            )
          :
          
-         (item.LI_ItemType==='L' ? <SubList id={item.LI_ItemID}  key={this.props.item.LI_ItemID + "_____" + index}></SubList> : <div></div>)
+         (item.LI_ItemType==='L' ? <SubList item={item}  key={this.props.item.LI_ID + "_____" + index}></SubList> : <div></div>)
          )
          )}
-           <NewListItem itemAdded={this.newItem} list={this.state.listID} key={this.props.item.LI_ItemID + "_____new"}></NewListItem>
-        
-            
-        <LoaderButton 
-          block
-          bsStyle="primary"
-          bsSize="large"
-          disabled={!this.validateForm()}
-          type="submit"
-          isLoading={this.state.isLoading}
-          text="OK"
-          loadingText="Saving..."
-        />
+           <NewListItem itemAdded={this.newItem} list={this.state.listID} lastItem={this.state.lastItem} key={this.props.item.LI_ID + "_____new"} nextOrder={this.state.nextOrder}></NewListItem>
+  
         </div>
             }
       </form>

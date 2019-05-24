@@ -1,7 +1,5 @@
 import React, { Component } from "react";
 import { API,Auth } from "aws-amplify";
-import { ListGroupItem } from "react-bootstrap";
-import TodoItemEdit from "./TodoItemEdit";
 import ListItem from "./ListItem";
 import ReadonlyListItem from "./ReadonlyListItem";
 import SubList from "./SubList";
@@ -20,15 +18,21 @@ export default class DraggableItem extends Component {
   }
 
 
-  async componentDidMount() {
-    this.setState({ todoItem: this.props.todoItem });
+ componentDidMount() {
+    this.setState({  });
+    Auth.currentUserInfo().then((user=>{
+      this.setState({ email: user.attributes.email,todoItem: this.props.todoItem });
+    }));
+    this.updateStatus();
+  }
+  updateStatus(){
     const item=this.props.item;
     if(item.LI_PercentComplete <100&& item.LI_DependsJSON){
       var itemStatus="open";
     API.get("todos","/dependency_status/" + item.LI_DependsJSON).then((deps)=>{
-      var depArr=[];
       var blocked=false;
       var overdue=true;
+      
       deps.forEach((dep)=>{
         if(dep.LI_PercentComplete<100){
           blocked=true;
@@ -56,35 +60,40 @@ export default class DraggableItem extends Component {
       this.setState({itemStatus:"open"});
     }
   }
-    const user = await Auth.currentUserInfo();
-    await this.setState({ email: user.attributes.email });
+    
   }
   blurHandle = event => { };
   saveItem = async () => {
     this.props.item.LI_PercentComplete = !this.props.item.LI_PercentComplete;
-    await this.props.update(this.props.item);
+    await this.update(this.props.item);
     await this.setState({ todoItem: this.props.item });
+  }
+  update=(item)=>{
+    this.props.update(item);
+    
+    this.setState({item},()=>{this.updateStatus()});
   }
   render() {
     if (this.props.item.LI_ID) {
       return (
-        <Draggable draggableId={"draggable-" + this.props.item.LI_ItemID} index={this.props.item.LI_Order} key={"draggable-" + this.props.item.LI_ID}  >
+        <Draggable draggableId={"draggable-" + this.props.item.LI_ID} index={this.props.item.LI_Order} key={"draggable-" + this.props.item.LI_ID}  >
           {(provided, snapshot) => (
             <div
-            className={this.state.itemStatus}
+            className={(this.props.item.LI_ItemType==='T'?this.state.itemStatus:"subList")}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
             >
               {this.props.item.LI_ItemType === "T" ?
                 (
-                  (this.props.item.LI_AssignedToEmail === this.state.email ?
-                    <ListItem key={"draggable-" + this.props.item.LI_ID} item={this.props.item} delete={this.props.delete} update={this.props.update}  className={this.state.itemStatus}></ListItem>
+                  (this.props.item.LI_AssignedToEmail === this.state.email && this.state.itemStatus!=="blocked"?
+
+                    <ListItem key={"draggable-" + this.props.item.LI_ID} itemStatus={this.state.itemStatus} item={this.props.item} delete={this.props.delete} update={this.update}  className={this.state.itemStatus}></ListItem>
                     :
-                    <ReadonlyListItem key={"draggable-" +  this.props.item.LI_ID} ListItem={this.props.item} delete={this.props.delete} update={this.props.update}></ReadonlyListItem>
+                    <ReadonlyListItem key={"draggable-" +  this.props.item.LI_ID} itemStatus={this.state.itemStatus}  ListItem={this.props.item} delete={this.props.delete} update={this.update}></ReadonlyListItem>
                   )
                 )
-                : (<SubList key={"draggable-"+  this.props.item.LI_ID} item={this.props.item}></SubList>)}
+                : (<SubList key={"draggable-"+  this.props.item.LI_ID} item={this.props.item} className="subList"></SubList>)}
 
 
             </div>
@@ -96,87 +105,5 @@ export default class DraggableItem extends Component {
     }
 
   }
-  renderx() {
-    if (this.props.item.LI_Name)
-      return (
-        <ListGroupItem
-          key={this.props.item.LI_ID}
-          style={{ borderBottom: "0px", padding: "0px" }}
-        >
-          <div style={{ border: "0px" }} className="[ form-group ]" >
-            <div style={{ float: "left", width: "50px", border: "none" }} >
-              <label
-
-                onBlur={this.blurHandle}
-                htmlFor="fancy-checkbox-default"
-                className="[ btn btn-default ]"
-                onClick={event => {
-                  this.saveItem();
-                }}
-              >
-                {" "}
-                {this.props.item.LI_PercentComplete ? (
-                  <span className="[ glyphicon glyphicon-ok ]" />
-                ) : (
-                    <span className="[ glyphicon glyphicon-unchecked ]" />
-                  )}
-              </label>
-            </div>
-
-            <div
-              style={{
-                float: "right",
-                verticalAlign: "top",
-                width: "40px",
-                border: "none"
-              }}
-            >
-              <div
-                className="btn btn-default"
-                onClick={event => {
-                  this.setState({ expand: !this.state.expand });
-                }}
-              >
-                {this.state.expand ? (
-                  <span
-                    className="glyphicon glyphicon-chevron-up"
-                    onClick={event => {
-                      event.preventDefault();
-                    }}
-                  />
-                ) : (
-                    <span
-                      className="glyphicon glyphicon-chevron-down"
-                      onClick={event => {
-                        event.preventDefault();
-                      }}
-                    />
-                  )}
-              </div>
-            </div>
-            <div style={{ border: "none" }}>
-              <span
-
-                onBlur={this.blurHandle}
-              >
-                <span
-                  style={
-                    this.props.item.LI_PercentComplete
-                      ? { textDecoration: "line-through" }
-                      : {}
-                  }
-                  onClick={event => {
-                    this.saveItem();
-                  }}
-                >
-                  {!this.state.expand && this.props.item.LI_Name}
-                </span>
-              </span>
-            </div>
-          </div>
-          {this.state.expand && <TodoItemEdit item={this.props.item} delete={this.props.delete} update={this.props.update} />}
-        </ListGroupItem>
-      );
-    else return null;
-  }
+  
 }

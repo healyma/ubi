@@ -6,13 +6,14 @@ import config from "../config";
 import DraggableItem from "./DraggableItem";
 import "./Lists.css";
 import ListItem from "./ListItem";
-import { Draggable, Droppable } from "react-beautiful-dnd";
+import {  Droppable } from "react-beautiful-dnd";
 
 export default class DroppableList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       listID: 0,
+      loaded:false,
       email: "",
       listItems: [],
       List: {
@@ -20,16 +21,24 @@ export default class DroppableList extends Component {
       }
     };
   }
-
-  async componentDidMount() {
-    this.loadData();
-    const user = await Auth.currentUserInfo();
-    await this.setState({ email: user.attributes.email });
-
-
+  componentWillReceiveProps(newProps){
+    const user = Auth.currentUserInfo().then((user)=>{
+      this.setState({ loaded:true,email: user.attributes.email, listItems: this.props.listItems });
+    })
   }
-  async loadData() {
-    
+  componentWillMount() {
+  }
+
+  
+   loadData() {
+    var listItems=this.state.listItems;
+    listItems.forEach((item,index)=>{
+      if(item.LI_Order != index+1){
+        console.log(`index ${index+1} - order ${item.LI_Order}`)
+        item.LI_Order=index+1;
+        this.updateItem(item);
+      }
+    })
   }
 
 
@@ -145,7 +154,6 @@ export default class DroppableList extends Component {
     API.put('todos', `/list-contents/${item.LI_LTID}/${item.LI_ItemID}`, { body: item }, function (err, res) {
       console.log(res);
     });
-    this.loadData();
   }
   handleChange = event => {
     this.setState({
@@ -181,57 +189,11 @@ export default class DroppableList extends Component {
       this.saveList(this.state.List);
     }
   }
-  renderItem(item, i) {
-    if (item.itemName) {
-      return (
-        <Draggable  delete={this.props.delete} update={this.props.update} draggableId={i} index={i} style={{ borderBottom: "0px", padding: "0px" }}>
-          {(provided) => (
-            <ListGroupItem
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              innerRef={provided.innerRef}
-              style={{ border: "0px" }}
-              className="[ form-group ]"
-            >
-              <div>
-                <div style={{ float: "left", width: "50px", border: "none" }}>
-                  <label onClick={event => { item.completed = !item.completed; this.setState({ listitems: this.List.listItems }) }}
-
-                    onBlur={this.blurHandle}
-                    htmlFor="fancy-checkbox-default"
-                    className="[ btn btn-default ]"
-                  >
-                    {(item.completed
-                      ?
-                      <span className="[ glyphicon glyphicon-ok ]" />
-                      :
-                      <span className="[ glyphicon glyphicon-unchecked ]" />
-                    )}
-                  </label>
-
-
-                </div>
-                <div className="[ btn-group ]">
-
-                </div>
-                <div>
-                  <span onClick={event => { item.completed = !item.completed; this.setState({ listitems: this.listItems }) }} >
-                    {item.itemName} </span>
-                </div>
-              </div>
-            </ListGroupItem>
-          )}
-
-        </Draggable>
-      )
-    } else {
-      return "";
-    }
-
-  }
 
   render() {
-    console.log(this.props.listItems)
+    if(!this.state.loaded)return (<div>loading...</div>)
+    this.loadData();
+    
     return (
       <Droppable droppableId="droppable-1">
       {(provided, snapshot) => (
@@ -239,7 +201,7 @@ export default class DroppableList extends Component {
          ref={provided.innerRef}
           {...provided.droppableProps}
         >
-          {[{}].concat(this.props.listItems).map((item) => 
+          {[{}].concat(this.state.listItems).map((item) => 
          ( (item &&<DraggableItem delete={this.props.delete} update={this.props.update} item={item} key={item.LI_ID}></DraggableItem>)))}
 
           {provided.placeholder}

@@ -13,7 +13,11 @@ export default class GanttChart extends Component {
   }
 
   async componentDidMount() {
+    if(this.props.listid){
     var tasks = await API.get("todos", `/list-contents/${this.props.listid}`);
+  }else{
+    tasks=[]
+  }
     if (isArray(tasks)) {
       this.tasks = []
 
@@ -27,8 +31,8 @@ export default class GanttChart extends Component {
         this.tasks.push({
           id: "__task" + task.LI_ID,
           name: task.LI_Name,
-          start: new Date(task.LI_Start == null ? Date.now() : task.LI_Start),
-          end: new Date(task.LI_End == null ? Date.now() + 100000000 : task.LI_End),
+          start: new Date(task.LI_StartScheduled == null ? Date.now() : task.LI_StartScheduled),
+          end: new Date(task.LI_EndScheduled == null ? Date.now() + 100000000 : task.LI_EndScheduled),
           progress: task.LI_Complete,
           dependencies: deps
         });

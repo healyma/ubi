@@ -66,7 +66,7 @@ export default class ProjectDocs extends Component {
                 </Row>
                 {[{}].concat(this.state.docs).map((doc) => (
                     (doc.lastUpdate &&
-                        <Row>
+                        <Row key={doc._id}>
                             <Col>
                                 {doc.name}
                             </Col>

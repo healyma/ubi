@@ -27,7 +27,9 @@
 .form-group input[type="checkbox"]:checked + .btn-group > label span:last-child {
   display: none;   
 }
-.subList{
-  background-color: bisque;
-  padding:20px;
+.subListContainer{
+  padding-left:20px;
+  border: 2px solid black;
+  border-radius: 2px;
+  background-color: white;
 }

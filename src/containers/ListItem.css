@@ -1,35 +1,25 @@
 .complete{
-    border: 1px solid darkgray;
-    border-radius: 2px;
-    padding: 8px;
-    margin-bottom: 8px;
-    background-color: lightgray;
+    border: 4px solid darkgray;
+    border-radius: 4px;
 }
 .open{
-    border: 1px solid darkgreen;
-    border-radius: 2px;
-    padding: 8px;
-    margin-bottom: 8px;
-    background-color: lightgreen;
+    border: 4px solid darkgreen;
+    border-radius: 4px;
 }
 .notAvailable{
-    border: 1px solid black;
-    border-radius: 2px;
-    padding: 8px;
-    margin-bottom: 8px;
-    background-color: lightgreen;
+    border: 4px solid black;
+    border-radius: 4px;
 }
 .overdue{
-    border: 1px solid red;
-    border-radius: 2px;
-    padding: 8px;
-    margin-bottom: 8px;
-    background-color: rgb(253, 93, 93);
+    border: 4px solid red;
+    border-radius: 4px;
 }
 .blocked{
-    border: 1px solid blue;
-    border-radius: 2px;
-    padding: 8px;
-    margin-bottom: 8px;
-    background-color: lightblue;
+    border: 4px solid blue;
+    border-radius: 4px;
+}
+.subList{
+    padding: 0px;
+    border:0px solid white;
+
 }

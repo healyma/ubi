@@ -10,10 +10,11 @@ import Todos from "./containers/Todos";
 import Todo from "./containers/List";
 import Note from "./containers/Note";
 import NewTodo from "./containers/NewTodo";
-import NewProject from "./containers/NewProject";
+import Project from "./containers/Project";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 import Settings from "./containers/Settings";
+import ProjectsCard from "./containers/ProjectsCard";
 
 export default ({ childProps }) => (
   <Switch>
@@ -63,7 +64,19 @@ export default ({ childProps }) => (
     <AuthenticatedRoute
       path="/projects/new"
       exact
-      component={NewProject}
+      component={Project}
+      props={childProps}
+    />
+    <AuthenticatedRoute
+      path="/projects/"
+      exact
+      component={ProjectsCard}
+      props={childProps}
+    />
+    <AuthenticatedRoute
+      path="/projects/:id"
+      exact
+      component={Project}
       props={childProps}
     />
           <AuthenticatedRoute

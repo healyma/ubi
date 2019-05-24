@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import {API,Auth} from "aws-amplify"; 
 import Card from "react-bootstrap/Card";
 import { LinkContainer } from "react-router-bootstrap";
@@ -15,11 +15,8 @@ export default class ProjectsCard extends Component {
     }
   }
   componentDidMount(){
-    console.log("mounting")
     Auth.currentUserInfo().then((user)=>{
-      console.log(user.attributes.email)
       API.get("todos","/project/user/"+user.attributes.email).then((projects)=>{
-        console.log(projects)
         this.setState({
           user:user,
           myProjects:projects
@@ -29,22 +26,36 @@ export default class ProjectsCard extends Component {
     
   }
  render(){
-  console.log(this.state.myProjects)
      return(
         <Card >
         <Card.Img variant="top" src="holder.js/100px180" />
         <Card.Body>
           <Card.Title>My projects</Card.Title>
-          <Card.Text>
-            [ list projects I'm involved in and links to todos and gantt charts]
+          <Row>
+              <Col>Project Name</Col>
+              <Col>Complete</Col>
+              <Col>Open tasks (mine)</Col>
+              <Col>Health</Col>
+              <Col><span className="oi oi-project"></span> | <span className="oi oi-list"></span> | <span className="oi oi-document"></span></Col>
+              </Row>
             {this.state.myProjects.map((project)=>(
-              <h2>{project.PT_Name}</h2>
+
+              <LinkContainer
+              key={"project" + project.PT_ID}
+              to={"/projects/"+project.PT_ID}
+            >
+            <Row>
+              <Col>{project.PT_Name}</Col>
+              <Col>0%</Col>
+              <Col>15(6)</Col>
+              <Col> health</Col>
+              <Col><span className="oi oi-project"></span> | <span className="oi oi-list"></span> | <span className="oi oi-document"></span></Col>
+              </Row>
+            </LinkContainer>
               )
             )}
-            [project name | date created | Owner | All tasks | Available tasks (all/mine) | aging/health | <span className="oi oi-project"></span> | <span className="oi oi-list"></span> | <span className="oi oi-document"></span> ]
             
-           
-          </Card.Text><div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between">
           <LinkContainer
           key="projects"
           to="/projects"

@@ -5,6 +5,7 @@ export default class todoItemItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      itemStatus:props.itemStatus,
       expand: false,
       todoItem: {}
     };
@@ -45,7 +46,7 @@ export default class todoItemItem extends Component {
                   this.setState({expand:!this.state.expand});
                 }}
               >
-              <span className="oi oi-person"></span>
+              {(this.state.itemStatus==="blocked"?<span className="oi oi-lock-locked"></span>:<span className="oi oi-person"></span>)}
               </div>
             </div>
             <div style={{ border: "none" }}>
@@ -63,7 +64,10 @@ export default class todoItemItem extends Component {
                     this.saveItem();
                   }}
                 >
-                 <span>{this.props.ListItem.LI_Name}<br/> <i>assigned to: {this.props.ListItem.LI_AssignedToEmail }</i></span>
+                 <span>{this.props.ListItem.LI_Name}<br/> <i>
+                   
+                   {this.state.itemStatus==="blocked"? "pending completion of dependencies": "assigned to: " +this.props.ListItem.LI_AssignedToEmail }
+                   </i></span>
                     
                 </span>
               </span>

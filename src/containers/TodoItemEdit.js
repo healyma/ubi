@@ -11,6 +11,7 @@ export default class TodoItemEdit extends Component {
       locale: {
         'format': 'DD/MM/YYYY'
     },
+    item:{
         LI_Name:this.props.item.LI_Name,
         LI_PercentComplete:this.props.item.LI_PercentComplete,
         LI_Assign_UserID:this.props.item.LI_Assign_UserID,
@@ -22,7 +23,9 @@ export default class TodoItemEdit extends Component {
         LI_ItemType: this.props.item.LI_ItemType,
         LI_LTID: this.props.item.LI_LTID,
         LI_Order: this.props.item.LI_Order,
-        LI_dependantsJSON: this.props.item.LI_dependantsJSON
+        LI_dependantsJSON: this.props.item.LI_dependantsJSON,
+        LI_AssignedToEmail:this.props.item.LI_AssignedToEmail
+    }
       
     }
     console.log(new Date(this.props.item.LI_EndScheduled).toISOString().split('T')[0]);
@@ -37,6 +40,13 @@ export default class TodoItemEdit extends Component {
   } 
   handleNamechange(){
 
+  }
+  changeToList=()=>{
+    var item= this.state.item;
+    item.LI_ItemType='L';
+    this.setState({item},()=>{
+      this.props.update(this.state.item)
+    });
   }
 
   handleDelete(){
@@ -55,11 +65,12 @@ export default class TodoItemEdit extends Component {
             }}
               onChange={this.handleChange}
 
-              defaultValue={this.state.LI_Name}
+              defaultValue={this.state.item.LI_Name}
             type="text"
           />
         </FormGroup>
-        [happens after] [happens before] [time required] [start date] [end date] [convert to list]
+        [happens after] [happens before] [time required] [start date] [end date] 
+        {(this.state.item.LI_ItemType==='T'? <div onClick={this.changeToList}>Convert to a list<span className="oi oi-list"></span></div>:<span></span>)}
         <DependencyMapper></DependencyMapper>
           </Col>
         </Row>
@@ -71,7 +82,7 @@ export default class TodoItemEdit extends Component {
             ref={ref => {
               this.LI_Assign_UserID= ref;
             }}
-            defaultValue={this.state.LI_Assign_UserID}
+            defaultValue={this.state.item.LI_Assign_UserID}
               onChange={this.handleChange}
           />
           </FormGroup>
@@ -171,16 +182,16 @@ export default class TodoItemEdit extends Component {
                     console.log(this.state);
                     this.props.update({
                         LI_Name:this.state.todoItemName,
-                        LI_PercentComplete:this.props.item.LI_PercentComplete,
-                        LI_Assign_UserID:this.state.LI_Assign_UserID,
-                        LI_ID:this.props.item.LI_ID,
-                        LI_StartScheduled:this.state.LI_StartScheduled,
-                        LI_EndScheduled:this.state.LI_EndScheduled,
-                        LI_DependsJSON: this.props.item.LI_DependsJSON,
-                        LI_ItemID: this.props.item.LI_ItemID,
-                        LI_ItemType: this.props.item.LI_ItemType,
-                        LI_LTID: this.props.item.LI_LTID,
-                        LI_Order: this.props.item.LI_Order,
+                        LI_PercentComplete:this.state.item.LI_PercentComplete,
+                        LI_Assign_UserID:this.state.item.LI_Assign_UserID,
+                        LI_ID:this.state.item.LI_ID,
+                        LI_StartScheduled:this.state.item.LI_StartScheduled,
+                        LI_EndScheduled:this.state.item.LI_EndScheduled,
+                        LI_DependsJSON: this.state.item.LI_DependsJSON,
+                        LI_ItemID: this.state.item.LI_ItemID,
+                        LI_ItemType: this.state.item.LI_ItemType,
+                        LI_LTID: this.state.item.LI_LTID,
+                        LI_Order: this.state.item.LI_Order,
                         LI_dependantsJSON: this.props.item.LI_dependantsJSON
                       
                     });

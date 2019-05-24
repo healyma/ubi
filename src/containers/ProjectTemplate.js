@@ -3,7 +3,6 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
-import { timingSafeEqual } from "crypto";
 export default class ProjectTemplate extends Component{
     constructor(props) {
         super(props);
@@ -57,7 +56,7 @@ export default class ProjectTemplate extends Component{
                                             defaultValue={this.state.industry}>
                                             <option value={0}>---</option>
                                                 {[{}].concat(this.state.templates).map((item) =>
-                                                    (item.industry==this.state.ddIndustry && <option value={item.value} key={item.value}>{item.name}</option>))}
+                                                    (item.industry===this.state.ddIndustry && <option value={item.value} key={item.value}>{item.name}</option>))}
                                             </Form.Control>
                                         </Form.Group>
                                     </Col>

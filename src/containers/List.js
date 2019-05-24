@@ -3,7 +3,7 @@ import { API, Auth } from "aws-amplify";
 import { FormGroup, ListGroupItem } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import { LinkContainer } from "react-router-bootstrap";
-import LoaderButton from "../components/LoaderButton";
+import Button from "react-bootstrap/Button";
 import GanttChart from "./Gantt";
 import config from "../config";
 import "./Lists.css";
@@ -17,43 +17,46 @@ export default class List extends Component {
     super(props);
 this.newList = props.listItems;
     this.state = {
-      listID: 0,
+      listID: (props.match?props.match.params.id:props.id),
       nextOrder:0,
+      hideComplete:false,
       email: "",
       listItems: [],
       List: {
         LI_Name: ""
-      }
+      },
+      lastItem:{}
     };
   }
 
-  async componentDidMount() {
-    this.loadData();
-    const user = await Auth.currentUserInfo();
-    await this.setState({ email: user.attributes.email });
-    if (this.props.match) {
-      await this.setState({ listID: this.props.match.params.id });
-    } else if (this.props.id) {
-      await this.setState({ listID: this.props.id });
-
-    }
-    
-
+  componentDidMount() {
+    Auth.currentUserInfo().then((user)=>{
+      this.setState({ 
+        email: user.attributes.email
+       },()=>{
+        this.loadData();
+    });
+  });
+}
+  loadData(){
+    if(this.state.listID>0){
+    this.getList().then((list)=>{
+      this.getListItems().then((items)=>{
+        this.setState({nextOrder: (this.state.listItems[0]? this.state.listItems[0].nextOrder: 0),
+        List:list,
+      listItems:items,
+      lastItem:items[items.length-1]
+    });
+      })
+    });
   }
-  async loadData() {
-    await this.setState({
-      List: await this.getList(),
-      listItems: await this.getListItems()
-    })
-
-    await this.setState({nextOrder: (this.state.listItems[0]? this.state.listItems[0].nextOrder: 0)})
   }
 
   getList() {
-    return API.get("todos", `/list/${this.props.match.params.id}`);
+    return API.get("todos", `/list/${this.state.listID}`);
   }
   getListItems() {
-    return API.get("todos", `/list-contents/${this.props.match.params.id}`);
+    return API.get("todos", `/list-contents/${this.state.listID}`);
 
   }
 
@@ -75,33 +78,21 @@ this.newList = props.listItems;
     this.file = event.target.files[0];
   }
 
-  async saveList(List) {
-    this.state.List.LI_Name = this.LI_Name.value;
-    await this.setState({ List: this.state.List });
-    console.log({ LI_ID: this.state.listID, LI_Name: this.LI_Name.value });
+   saveList(List) {
+    this.setState({[List.LI_Name] : this.LI_Name.value});
+    this.setState({ List: this.state.List });
     return API.put("todos", `/list/${this.state.listID}`, {
       body: { LI_ID: this.state.listID, LI_Name: this.LI_Name.value }
     });
   }
 
-  handleSubmit = async event => {
+  handleSubmit =  event => {
     event.preventDefault();
-
-    if (this.file && this.file.size > config.MAX_ATTACHMENT_SIZE) {
-      alert(`Please pick a file smaller than ${config.MAX_ATTACHMENT_SIZE / 1000000} MB.`);
-      return;
-    }
-
-    await this.setState({ isLoading: true, List: { listName: this.LI_Name.value } });
-
-    try {
-
-      await this.saveList(this.state.List);
-      this.props.history.push("/");
-    } catch (e) {
-      alert(e);
-      this.setState({ isLoading: false });
-    }
+this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
+  console.log(this.state.List)
+  this.saveList(this.state.List);
+  this.props.history.push("/");
+    })
   }
   ListLists() {
     return API.get("Lists", "/lists");
@@ -128,7 +119,9 @@ this.newList = props.listItems;
   deleteList() {
     return API.del("todos", `/list/${this.state.listID}`);
   }
-
+  filterItems= (value)=>{
+    return (this.state.hideComplete? value.LI_PercentComplete<100: true);
+  }  
   handleDelete = async event => {
     event.preventDefault();
 
@@ -160,15 +153,11 @@ this.newList = props.listItems;
     }
 
     API.del("todos", `/list-contents/${list}/${listItem}`);
-    this.loadData();
     return;
   }
   updateItem = async (item) => {
-    console.log(item);
     API.put('todos', `/list-contents/${item.LI_LTID}/${item.LI_ItemID}`, { body: item }, function (err, res) {
-      console.log(res);
     });
-    this.loadData();
   }
   handleChange = event => {
     this.setState({
@@ -176,9 +165,8 @@ this.newList = props.listItems;
     });
   };
 
-  newItem = async item => {
+  newItem =  ()=> {
     this.loadData();
-
   }
   reorder(list, startIndex, endIndex) {
     const result = Array.from(list);
@@ -189,7 +177,7 @@ this.newList = props.listItems;
   };
 
 
-  SaveList() { }
+  SaveListxx() { }
 
   blurHandle = event => {
     this.addListItem();
@@ -204,74 +192,42 @@ this.newList = props.listItems;
       this.saveList(this.state.List);
     }
   }
-  renderItem(item, i) {
-    if (item.itemName) {
-      return (
-        <Draggable draggableId={i} index={i} style={{ borderBottom: "0px", padding: "0px" }}>
-          {(provided) => (
-            <ListGroupItem
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              innerRef={provided.innerRef}
-              style={{ border: "0px" }}
-              className="[ form-group ]"
-            >
-              <div>
-                <div style={{ float: "left", width: "50px", border: "none" }}>
-                  <label onClick={event => { item.completed = !item.completed; this.setState({ listitems: this.List.listItems }) }}
 
-                    onBlur={this.blurHandle}
-                    htmlFor="fancy-checkbox-default"
-                    className="[ btn btn-default ]"
-                  >
-                    {(item.completed
-                      ?
-                      <span className="[ glyphicon glyphicon-ok ]" />
-                      :
-                      <span className="[ glyphicon glyphicon-unchecked ]" />
-                    )}
-                  </label>
-
-
-                </div>
-                <div className="[ btn-group ]">
-
-                </div>
-                <div>
-                  <span onClick={event => { item.completed = !item.completed; this.setState({ listitems: this.listItems }) }} >
-                    {item.itemName} </span>
-                </div>
-              </div>
-            </ListGroupItem>
-          )}
-
-        </Draggable>
-      )
-    } else {
-      return "";
-    }
-
-  }
 
    render() {
+     if(this.state.listItems.length>0){
      this.lastItem=this.state.listItems.slice(-1)[0];
+     }
     return (
       <div className="NewList" >
+      <Form onSubmit={this.handleSubmit}>
         <FormGroup >
+        <Button className="w-25"
+        style={{
+          float: "right",
+          verticalAlign: "middle",
+          align: "left",
+          border: "1px",
+          paddingLeft:"10px"
+        }}
+          disabled={!this.validateForm()}
+          type="submit"
+        > <span className="oi oi-pencil"></span></Button>
+        <div className="w-75">
           <Form.Control type="text" placeholder="New task"
             ref={input => this.LI_Name = input}
             onChange={this.handleChange}
             defaultValue={this.state.List.LI_Name}
+            
           />
-        </FormGroup>
-
+          </div>
+          </FormGroup>
+       </Form>
         <DragDropContext onDragEnd={ (result)=> {
     if(!result.destination){
-      console.log("no destination")
       return;
     }
     if(result.destination.droppableId === result.source.droppableId && result.destination.index === result.source.index){
-      console.log("destination=source")
       return;
     }
     this.newList=this.state.listItems;
@@ -288,20 +244,11 @@ this.newList = props.listItems;
     }}>
 
 
-          <DroppableList delete={this.deleteItem} update={this.updateItem} listItems={this.state.listItems}></DroppableList>
+          <DroppableList delete={this.deleteItem} update={this.updateItem} listItems={this.state.listItems.filter(this.filterItems)}></DroppableList>
         </DragDropContext>
 
-        <NewListItem itemAdded={this.newItem} list={this.state.listID} nextOrder={this.state.nextOrder}></NewListItem>
-        <LoaderButton
-          block
-          bsstyle="primary"
-          bssize="large"
-          disabled={!this.validateForm()}
-          type="submit"
-          isLoading={this.state.isLoading}
-          text="OK"
-          loadingText="Saving..."
-        /> <GanttChart listid={this.props.match.params.id}></GanttChart>
+        <NewListItem itemAdded={this.newItem} list={this.state.listID} nextOrder={this.state.nextOrder} lastItem={this.state.lastItem}></NewListItem>
+        <GanttChart listid={this.state.listId}></GanttChart>
     </div>
         );
   }

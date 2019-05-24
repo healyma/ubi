@@ -26,7 +26,6 @@ export default class Notes extends Component {
   async componentDidMount() {
     try {
       let attachmentURL;
-      console.log(this.props.match.params.id)
       if(this.props.match.params.id){
         const note = await this.getNote();
         const { content, title, attachment } = note;
@@ -175,7 +174,6 @@ renderNotes() {
 }
 
 render() {
-  console.log(this.state.note);
   return (
     <div className="Notes">
       {this.state.note ?

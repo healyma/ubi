@@ -1,36 +1,51 @@
 import React, { Component } from "react";
-import {  Button } from "react-bootstrap";
-import ToggleButton from "react-bootstrap/ToggleButton";
-import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
-import ButtonToolbar from "react-bootstrap/ButtonToolbar";
+import {  Button,Row } from "react-bootstrap";
+import {API, Auth } from "aws-amplify";
 import Card from "react-bootstrap/Card";
-import Todos from "./Todos";
 import "./Home.css";
 
 export default class TasksCard extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      tasks:[],
+      user:{}
+    }
+  }
+  componentDidMount(){
+    Auth.currentUserInfo().then((user)=>{
+      API.get("todos","/user_tasks/" + user.attributes.email).then((tasks)=>{
+
+      this.setState({user, tasks});
+      });
+    });
+
+  }
  render(){
      return(
       <Card >
       <Card.Img variant="top" src="holder.js/100px180" />
       <Card.Body>
         <Card.Title>My Tasks</Card.Title>
-        <Card.Text>
-        <ButtonToolbar>
-    <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-      <ToggleButton value={1}>My Overdue Tasks</ToggleButton>
-      <ToggleButton value={2}>My Available Tasks</ToggleButton>
-      <ToggleButton value={3}>My Incompete Tasks</ToggleButton>
-      <ToggleButton value={4}>Everything</ToggleButton>
-      <Todos></Todos>
-    </ToggleButtonGroup>
-  </ButtonToolbar>
+   
         [ Tasks assigned to me]
         [Projet -> List -> ... -> List -> tasks]
         [Pin open/next in project to home]
           [ Summary, complete, open/current and upcoming]
           [list open tasks  -> project->(sublists)->task]
           [button to start task, complete task]
-        </Card.Text>
+
+{this.state.tasks.map((task)=>(
+<Row key={task.LI_ID}> {task.LI_ItemType==="T" &&
+         <div > <b><span style={
+          task.LI_PercentComplete>=100
+            ? { textDecoration: "line-through" }
+            : {}
+        }>{task.LI_Name}</span></b>
+</div> 
+}</Row>
+)
+)}
         <Button variant="primary">Go somewhere</Button>
       </Card.Body>
     </Card>

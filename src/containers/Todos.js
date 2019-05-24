@@ -115,7 +115,6 @@ todoLists(){
   return API.get("todos", "/lists/" + this.email);
 }
 renderTodosLists(todos) {
-  console.log(todos);
   return [{}].concat(todos).map(
     (aTodo, i) => 
       i !== 0

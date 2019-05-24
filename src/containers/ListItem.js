@@ -17,24 +17,24 @@ width:10px;
 height:10px;
 background-color: white;
 `;
-export default class todoItemItem extends Component {
+export default class TodoItemItem extends Component {
   constructor(props) {
     super(props);
      this.state = {
       expand: false,
-      todoItem: {}
+      item: {}
     };
   }
 
   async componentDidMount() {
     
-  this.setState({ todoItem: this.props.item });
+  this.setState({ item: this.props.item });
   }
   blurHandle = event => {};
   saveItem=  async() =>{
     this.props.item.LI_PercentComplete = Math.abs(100-this.props.item.LI_PercentComplete);
-    await this.props.update(this.props.item);
-    await this.setState({ todoItem: this.props.item });
+    
+    this.setState({ item: this.state.item },()=>{this.props.update(this.state.item)});
   }
   render() {
     return (    <Container>  <div style={{ border: "0px" }} className="[ form-group ]" >
@@ -49,12 +49,11 @@ export default class todoItemItem extends Component {
         }}
       >
         {" "}
-        {this.props.item.LI_PercentComplete===100 ? (
+        {(this.props.item.LI_PercentComplete===100 ? (
           
           <span className="oi oi-task"></span>
-        ) : (
-          <Box></Box>
-          
+        ) : 
+          <Box></Box>   
         )}
       </div>
     </div>
@@ -97,7 +96,7 @@ export default class todoItemItem extends Component {
       >
         <span
           style={
-            this.props.item.LI_PercentComplete
+            this.props.item.LI_PercentComplete>=100
               ? { textDecoration: "line-through" }
               : {}
           }
@@ -105,7 +104,7 @@ export default class todoItemItem extends Component {
             this.saveItem();
           }}
         >
-        {!this.state.expand && <span> &nbsp;{this.state.todoItem.LI_Name} </span>}
+        {!this.state.expand && <span> &nbsp;{this.state.item.LI_Name} </span>}
         </span>
       </span>
     </div>

@@ -1,9 +1,7 @@
 import React, { Component } from "react";
-import { ListGroup, ListGroupItem } from "react-bootstrap";
 import Accordion from "react-bootstrap/Accordion";
 import Card from "react-bootstrap/Card";
 import { Link } from "react-router-dom";
-import { LinkContainer } from "react-router-bootstrap";
 import ProjectsCard from "./ProjectsCard";
 import TasksCard from "./TasksCard";
 import "./Home.css";
@@ -59,28 +57,7 @@ renderHome(){
  
 </Accordion>
 
-  <ListGroup
-  ><LinkContainer
-            key="newNote"
-            to="/notes"
-          >
-            <ListGroupItem>
-              <h4>
-                <b>{"\uFF0B"}</b> Notes
-              </h4>
-            </ListGroupItem>
-          </LinkContainer>
-          <LinkContainer
-          key="newTodo"
-          to="/todos"
-        >
-          <ListGroupItem>
-            <h4>
-              <b>{"\uFF0B"}</b> Todo Lists
-            </h4>
-          </ListGroupItem>
-        </LinkContainer>
-        </ListGroup>
+ 
         </div>
         );
 }
