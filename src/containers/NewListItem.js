@@ -22,10 +22,14 @@ export default class NewTodoItem extends Component {
     this.todoItem = this.state.todoItem;
   }
 
-  async componentDidMount() {
+   componentDidMount() {
     Auth.currentUserInfo().then((user)=>{
       this.setState({email:user.attributes.email})
     })
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({lastItem:newProps.lastItem})
+
   }
 blurHandle = event => {
     if(this.itemInput.value.length>0){
@@ -43,10 +47,12 @@ async saveItem(){
           itemName: this.itemInput.value,
           listID: this.props.list,
           complete: 0,
-          LI_Order:999,
+          LI_Order:(this.state.lastItem? this.state.lastItem +1 : 0),
+          LI_StartScheduled:  (this.state.lastItem && this.state.lastItem.LI_EndScheduled?new Date(Date.parse(this.state.lastItem.LI_EndScheduled) +(24*60*60*1000)):new Date()), //add a day to the end of the last task
+          LI_EndScheduled:  (this.state.lastItem && this.state.lastItem.LI_EndScheduled?new Date(Date.parse(this.state.lastItem.LI_EndScheduled) +(2*24*60*60*1000)):new Date()), //and 2 days for the end
           LI_Assign_UserID: this.state.email,
           type:"T",
-          LI_DependsJSON:this.props.lastItem.LI_ID
+          LI_DependsJSON:(this.state.lastItem ? this.props.lastItem.LI_ID: "")
 
         }
     }).then((newItem)=>{

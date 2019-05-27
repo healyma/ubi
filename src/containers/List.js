@@ -8,8 +8,9 @@ import GanttChart from "./Gantt";
 import config from "../config";
 import "./Lists.css";
 import ListItem from "./ListItem";
-import { DragDropContext, Draggable } from "react-beautiful-dnd";
+import { DragDropContext } from "react-beautiful-dnd";
 import  DroppableList from "./DroppableList";
+import BootstrapSwitchButton from "bootstrap-switch-button-react";
 import NewListItem from "./NewListItem";
 export default class List extends Component {
   lastItem={};
@@ -22,6 +23,7 @@ this.newList = props.listItems;
       hideComplete:false,
       email: "",
       listItems: [],
+      childItems:[],
       List: {
         LI_Name: ""
       },
@@ -46,7 +48,7 @@ this.newList = props.listItems;
         List:list,
       listItems:items,
       lastItem:items[items.length-1]
-    });
+    },()=>{console.log(this.state.lastItem)});
       })
     });
   }
@@ -89,7 +91,6 @@ this.newList = props.listItems;
   handleSubmit =  event => {
     event.preventDefault();
 this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
-  console.log(this.state.List)
   this.saveList(this.state.List);
   this.props.history.push("/");
     })
@@ -155,7 +156,7 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
     API.del("todos", `/list-contents/${list}/${listItem}`);
     return;
   }
-  updateItem = async (item) => {
+  updateItem = (item) => {
     API.put('todos', `/list-contents/${item.LI_LTID}/${item.LI_ItemID}`, { body: item }, function (err, res) {
     });
   }
@@ -176,8 +177,6 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
     return result;
   };
 
-
-  SaveListxx() { }
 
   blurHandle = event => {
     this.addListItem();
@@ -200,6 +199,21 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
      }
     return (
       <div className="NewList" >
+      Hide Completed tasks <BootstrapSwitchButton
+                            checked={this.state.hideComplete}
+                            size="xs"
+                            onlabel="Yes"
+                            offlabel="No"
+                            offstyle="outline-danger" 
+                            onstyle="outline-success"
+                            onChange= {()=>{
+                                this.setState({
+                                    hideComplete:!this.state.hideComplete
+                                })
+                                
+                            }}
+                            />
+      {(this.props.match?<span><b>Project Name</b>[stick in project name]:</span>:<span></span>)}
       <Form onSubmit={this.handleSubmit}>
         <FormGroup >
         <Button className="w-25"
@@ -223,6 +237,7 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
           </div>
           </FormGroup>
        </Form>
+
         <DragDropContext onDragEnd={ (result)=> {
     if(!result.destination){
       return;
@@ -236,7 +251,10 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
     this.newList.splice(result.destination.index,0,movedTask);
     //iterate through the list and update LI_Order
     for(var i=1;i<=this.newList.length;i++){
-      this.newList[i-1].LI_Order = i;
+      if(this.newList[i-1]!==i){
+        this.newList[i-1].LI_Order = i;
+        this.updateItem(this.newList[i-1]);
+      }
     }
     this.setState({
       listItems: this.newList
@@ -244,11 +262,11 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
     }}>
 
 
-          <DroppableList delete={this.deleteItem} update={this.updateItem} listItems={this.state.listItems.filter(this.filterItems)}></DroppableList>
+          <DroppableList delete={this.deleteItem} update={this.updateItem} hideComplete={this.state.hideComplete} listItems={this.state.listItems}></DroppableList>
         </DragDropContext>
 
         <NewListItem itemAdded={this.newItem} list={this.state.listID} nextOrder={this.state.nextOrder} lastItem={this.state.lastItem}></NewListItem>
-        <GanttChart listid={this.state.listId}></GanttChart>
+        <GanttChart listid={this.state.listID}></GanttChart>
     </div>
         );
   }

@@ -18,23 +18,25 @@ export default class DroppableList extends Component {
       listItems: [],
       List: {
         LT_Name: ""
-      }
+      },
+      hideComplete:false
     };
   }
-  componentWillReceiveProps(newProps){
-    const user = Auth.currentUserInfo().then((user)=>{
+  componentDidMount(){
+    Auth.currentUserInfo().then((user)=>{
       this.setState({ loaded:true,email: user.attributes.email, listItems: this.props.listItems });
-    })
-  }
-  componentWillMount() {
-  }
+  });  
+}
+  componentWillReceiveProps(newProps){
+      this.setState({  listItems: newProps.listItems,hideComplete:newProps.hideComplete },()=>{this.loadData()});
 
+  }
+  
   
    loadData() {
     var listItems=this.state.listItems;
     listItems.forEach((item,index)=>{
       if(item.LI_Order != index+1){
-        console.log(`index ${index+1} - order ${item.LI_Order}`)
         item.LI_Order=index+1;
         this.updateItem(item);
       }
@@ -64,7 +66,6 @@ export default class DroppableList extends Component {
   async saveList(List) {
     this.state.List.LT_Name = this.LT_Name.value;
     await this.setState({ List: this.state.List });
-    console.log({ LT_ID: this.state.listID, LT_Name: this.LT_Name.value });
     return API.put("todos", `/list/${this.state.listID}`, {
       body: { LT_ID: this.state.listID, LT_Name: this.LT_Name.value }
     });
@@ -150,9 +151,7 @@ export default class DroppableList extends Component {
     return;
   }
   updateItem = async (item) => {
-    console.log(item);
     API.put('todos', `/list-contents/${item.LI_LTID}/${item.LI_ItemID}`, { body: item }, function (err, res) {
-      console.log(res);
     });
   }
   handleChange = event => {
@@ -202,7 +201,7 @@ export default class DroppableList extends Component {
           {...provided.droppableProps}
         >
           {[{}].concat(this.state.listItems).map((item) => 
-         ( (item &&<DraggableItem delete={this.props.delete} update={this.props.update} item={item} key={item.LI_ID}></DraggableItem>)))}
+         ( (item &&<DraggableItem delete={this.props.delete} hideComplete={this.state.hideComplete} update={this.props.update} item={item} key={item.LI_ID}></DraggableItem>)))}
 
           {provided.placeholder}
         </div>

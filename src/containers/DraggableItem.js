@@ -13,6 +13,7 @@ export default class DraggableItem extends Component {
       dependencies:[],
       itemStatus:"notAvailable",
       expand: false,
+      hideComplete:false,
       todoItem: {}
     };
   }
@@ -21,9 +22,12 @@ export default class DraggableItem extends Component {
  componentDidMount() {
     this.setState({  });
     Auth.currentUserInfo().then((user=>{
-      this.setState({ email: user.attributes.email,todoItem: this.props.todoItem });
+      this.setState({ email: user.attributes.email,todoItem: this.props.todoItem, hideComplete: this.state.hideComplete });
     }));
     this.updateStatus();
+  }
+  componentWillReceiveProps(newProps){
+    this.setState({hideComplete:newProps.hideComplete})  
   }
   updateStatus(){
     const item=this.props.item;
@@ -70,7 +74,7 @@ export default class DraggableItem extends Component {
   }
   update=(item)=>{
     this.props.update(item);
-    
+    console.log("updating")
     this.setState({item},()=>{this.updateStatus()});
   }
   render() {
@@ -78,13 +82,14 @@ export default class DraggableItem extends Component {
       return (
         <Draggable draggableId={"draggable-" + this.props.item.LI_ID} index={this.props.item.LI_Order} key={"draggable-" + this.props.item.LI_ID}  >
           {(provided, snapshot) => (
-            <div
+            <div 
             className={(this.props.item.LI_ItemType==='T'?this.state.itemStatus:"subList")}
+            style={(this.state.itemStatus==="complete" && this.state.hideComplete?{height:"0px",border:"0px",margin:"0px"}:{})} 
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}
             >
-              {this.props.item.LI_ItemType === "T" ?
+              {(this.state.itemStatus==="complete" && this.state.hideComplete? <span ></span>:(this.props.item.LI_ItemType === "T" ?
                 (
                   (this.props.item.LI_AssignedToEmail === this.state.email && this.state.itemStatus!=="blocked"?
 
@@ -93,7 +98,7 @@ export default class DraggableItem extends Component {
                     <ReadonlyListItem key={"draggable-" +  this.props.item.LI_ID} itemStatus={this.state.itemStatus}  ListItem={this.props.item} delete={this.props.delete} update={this.update}></ReadonlyListItem>
                   )
                 )
-                : (<SubList key={"draggable-"+  this.props.item.LI_ID} item={this.props.item} className="subList"></SubList>)}
+                : (<SubList key={"draggable-"+  this.props.item.LI_ID} item={this.props.item} className="subList"></SubList>)))}
 
 
             </div>

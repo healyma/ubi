@@ -26,12 +26,12 @@ export default class TodoItemItem extends Component {
     };
   }
 
-  async componentDidMount() {
+   componentDidMount() {
     
   this.setState({ item: this.props.item });
   }
   blurHandle = event => {};
-  saveItem=  async() =>{
+  saveItem=  () =>{
     this.props.item.LI_PercentComplete = Math.abs(100-this.props.item.LI_PercentComplete);
     
     this.setState({ item: this.state.item },()=>{this.props.update(this.state.item)});
