@@ -48,7 +48,7 @@ this.newList = props.listItems;
         List:list,
       listItems:items,
       lastItem:items[items.length-1]
-    },()=>{console.log(this.state.lastItem)});
+    });
       })
     });
   }
@@ -144,20 +144,23 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
       this.setState({ isDeleting: false });
     }
   }
-  deleteItem = async (list, listItem) => {
+  deleteItem =  (list) => {
+    console.log(list)
     const confirmed = window.confirm(
-      "Are you sure you want to delete this item?"
+      "Are you sure you want to delete this item?" + list
     );
 
     if (!confirmed) {
       return;
     }
 
-    API.del("todos", `/list-contents/${list}/${listItem}`);
-    return;
+    API.del("todos", `/list-contents/${list}`).then((res)=>{console.log(res)}).then(()=>{
+
+      this.loadData();
+    })
   }
   updateItem = (item) => {
-    API.put('todos', `/list-contents/${item.LI_LTID}/${item.LI_ItemID}`, { body: item }, function (err, res) {
+    API.put('todos', `/list-contents/${item.LI_ID}`, { body: item }, function (err, res) {
     });
   }
   handleChange = event => {
@@ -266,7 +269,7 @@ this.setState({ isLoading: true, List: { listName: this.LI_Name.value } },()=>{
         </DragDropContext>
 
         <NewListItem itemAdded={this.newItem} list={this.state.listID} nextOrder={this.state.nextOrder} lastItem={this.state.lastItem}></NewListItem>
-        <GanttChart listid={this.state.listID}></GanttChart>
+        <GanttChart listItems={this.state.listItems}></GanttChart>
     </div>
         );
   }

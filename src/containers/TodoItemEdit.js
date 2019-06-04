@@ -13,6 +13,7 @@ export default class TodoItemEdit extends Component {
     },
     item:{
         LI_Name:this.props.item.LI_Name,
+        LI_ID:this.props.item.LI_ID,
         LI_PercentComplete:this.props.item.LI_PercentComplete,
         LI_Assign_UserID:this.props.item.LI_Assign_UserID,
         LI_ID:this.props.item.LI_ID,
@@ -50,7 +51,8 @@ export default class TodoItemEdit extends Component {
   }
 
   handleDelete(){
-    this.props.delete(this.props.item.LI_LTID,this.props.item.LI_ItemID);
+    console.log(this.state.item.LI_ID)
+    this.props.delete(this.state.item.LI_ID);
   }
   render(){
       return (
@@ -71,7 +73,7 @@ export default class TodoItemEdit extends Component {
         </FormGroup>
         [happens after] [happens before] [time required] [start date] [end date] 
         {(this.state.item.LI_ItemType==='T'? <div onClick={this.changeToList}>Convert to a list<span className="oi oi-list"></span></div>:<span></span>)}
-        <DependencyMapper></DependencyMapper>
+        <DependencyMapper task={this.state.item.LI_ID}></DependencyMapper>
           </Col>
         </Row>
         <Row>

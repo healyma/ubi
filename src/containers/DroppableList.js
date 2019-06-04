@@ -28,6 +28,7 @@ export default class DroppableList extends Component {
   });  
 }
   componentWillReceiveProps(newProps){
+    console.log("list updated")
       this.setState({  listItems: newProps.listItems,hideComplete:newProps.hideComplete },()=>{this.loadData()});
 
   }
@@ -151,7 +152,7 @@ export default class DroppableList extends Component {
     return;
   }
   updateItem = async (item) => {
-    API.put('todos', `/list-contents/${item.LI_LTID}/${item.LI_ItemID}`, { body: item }, function (err, res) {
+    API.put('todos', `/list-contents/${item.LI_ID}/`, { body: item }, function (err, res) {
     });
   }
   handleChange = event => {

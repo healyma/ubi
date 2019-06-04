@@ -98,7 +98,7 @@ export default class DraggableItem extends Component {
                     <ReadonlyListItem key={"draggable-" +  this.props.item.LI_ID} itemStatus={this.state.itemStatus}  ListItem={this.props.item} delete={this.props.delete} update={this.update}></ReadonlyListItem>
                   )
                 )
-                : (<SubList key={"draggable-"+  this.props.item.LI_ID} item={this.props.item} className="subList"></SubList>)))}
+                : (<SubList key={"draggable-"+  this.props.item.LI_ID} update={this.props.update} item={this.props.item} className="subList"></SubList>)))}
 
 
             </div>

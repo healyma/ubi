@@ -1,46 +1,34 @@
 import React, { Component } from 'react';
 import ReactGantt from 'gantt-for-react';
-import { API } from "aws-amplify";
 import { isArray } from 'util';
 
 export default class GanttChart extends Component {
   constructor(props) {
     super(props);
-    this.tasks = null;
-    this.state = {
-      viewMode: "Day"
-    };
+    this.state={viewMode:"Day",tasks:[]};
+  }
+  componentWillReceiveProps(newProps){
+    this.mapTasks(newProps.listItems)
   }
 
-  async componentDidMount() {
-    if(this.props.listid){
-    var tasks = await API.get("todos", `/list-contents/${this.props.listid}`);
-  }else{
-    tasks=[]
-  }
-    if (isArray(tasks)) {
-      this.tasks = []
-
-      tasks.forEach(task => {
-        var deps = [];
-        if (task.LI_DependsJSON > 0) {
-          task.LI_DependsJSON.split(",").forEach((dep) => {
-            deps.push("__task" + dep);
-          })
-        }
-        this.tasks.push({
-          id: "__task" + task.LI_ID,
-          name: task.LI_Name,
-          start: new Date(task.LI_StartScheduled == null ? Date.now() : task.LI_StartScheduled),
-          end: new Date(task.LI_EndScheduled == null ? Date.now() + 100000000 : task.LI_EndScheduled),
-          progress: task.LI_Complete,
-          dependencies: deps
-        });
-      });
-    } else {
-      this.tasks = null;
+mapTasks(tasks){
+  var _tasks = tasks.map((task)=>{
+    return {
+      id:"" + task.LI_ID,
+      name: task.LI_Name,
+      start: task.LI_StartScheduled,
+      end:task.LI_EndScheduled,
+      progress: (task.LI_PercentComplete?task.LI_PercentComplete * 100:0),
+      dependencies:task.LI_DependsJSON
     }
-
+  })
+  this.setState({
+    tasks:_tasks
+  });
+}
+  
+ componentDidMount() {
+   this.mapTasks(this.props.listItems);
   }
   on_click(task) {
     console.log(task);
@@ -54,13 +42,12 @@ export default class GanttChart extends Component {
   on_view_change(mode) {
   }
   render() {
-    console.log(this.tasks)
     return (
       <div>
-        {isArray(this.tasks) && this.tasks.length > 0
+        {isArray(this.state.tasks) && this.state.tasks.length > 0
           ?
           <ReactGantt
-            tasks={this.tasks}
+            tasks={this.state.tasks}
             viewMode={this.state.viewMode}
             onClick={this.on_click}
             onDateChange={this.on_date_change}
@@ -69,7 +56,6 @@ export default class GanttChart extends Component {
             customPopupHtml={function (task) {
               // the task object will contain the updated
               // dates and progress value
-              console.log(task)
               const end_date = task.end;
               return `
       <div class="details-container">

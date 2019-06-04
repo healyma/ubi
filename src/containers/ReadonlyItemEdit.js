@@ -1,17 +1,13 @@
 import React, { Component } from "react";
 import {  Row, Col} from "react-bootstrap";
+import TodoItemEdit from "./TodoItemEdit";
 
 
 export default class ReadonlyItemEdit extends Component {
   constructor(props) {
     super(props);
     this.state ={
-      item:{
-        TK_Name:"",
-        TK_Complete:"",
-        TK_Assign_UserID:"",
-        TK_ID:0
-      }
+      item:this.props.item
     }
     console.log(this.props);
   }
@@ -20,9 +16,7 @@ export default class ReadonlyItemEdit extends Component {
       [event.target.id]: event.target.value
     });
   }
-  componentDidMount(){
-    this.setState({item:this.props.item});
-  } 
+  
   handleNamechange(){
 
   }
@@ -54,6 +48,7 @@ export default class ReadonlyItemEdit extends Component {
             </Col>
 
         </Row>
+        <TodoItemEdit item={this.state.item} delete={this.props.delete} update={this.props.update}></TodoItemEdit>
       </div>     
       
       );
